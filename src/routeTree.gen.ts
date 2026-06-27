@@ -16,6 +16,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSpeechRouteImport } from './routes/api/speech'
+import { Route as ApiExecutiveChatRouteImport } from './routes/api/executive-chat'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppStudentsRouteImport } from './routes/_app/students'
 import { Route as AppLeadsRouteImport } from './routes/_app/leads'
@@ -55,6 +57,16 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSpeechRoute = ApiSpeechRouteImport.update({
+  id: '/api/speech',
+  path: '/api/speech',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiExecutiveChatRoute = ApiExecutiveChatRouteImport.update({
+  id: '/api/executive-chat',
+  path: '/api/executive-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -101,6 +113,8 @@ export interface FileRoutesByFullPath {
   '/leads': typeof AppLeadsRoute
   '/students': typeof AppStudentsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/executive-chat': typeof ApiExecutiveChatRoute
+  '/api/speech': typeof ApiSpeechRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,6 +129,8 @@ export interface FileRoutesByTo {
   '/leads': typeof AppLeadsRoute
   '/students': typeof AppStudentsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/executive-chat': typeof ApiExecutiveChatRoute
+  '/api/speech': typeof ApiSpeechRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,6 +147,8 @@ export interface FileRoutesById {
   '/_app/leads': typeof AppLeadsRoute
   '/_app/students': typeof AppStudentsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/executive-chat': typeof ApiExecutiveChatRoute
+  '/api/speech': typeof ApiSpeechRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,6 +165,8 @@ export interface FileRouteTypes {
     | '/leads'
     | '/students'
     | '/api/chat'
+    | '/api/executive-chat'
+    | '/api/speech'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,6 +181,8 @@ export interface FileRouteTypes {
     | '/leads'
     | '/students'
     | '/api/chat'
+    | '/api/executive-chat'
+    | '/api/speech'
   id:
     | '__root__'
     | '/'
@@ -176,6 +198,8 @@ export interface FileRouteTypes {
     | '/_app/leads'
     | '/_app/students'
     | '/api/chat'
+    | '/api/executive-chat'
+    | '/api/speech'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -187,6 +211,8 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProgramsRoute: typeof ProgramsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiExecutiveChatRoute: typeof ApiExecutiveChatRoute
+  ApiSpeechRoute: typeof ApiSpeechRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,6 +264,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/speech': {
+      id: '/api/speech'
+      path: '/api/speech'
+      fullPath: '/api/speech'
+      preLoaderRoute: typeof ApiSpeechRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/executive-chat': {
+      id: '/api/executive-chat'
+      path: '/api/executive-chat'
+      fullPath: '/api/executive-chat'
+      preLoaderRoute: typeof ApiExecutiveChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -312,6 +352,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProgramsRoute: ProgramsRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiExecutiveChatRoute: ApiExecutiveChatRoute,
+  ApiSpeechRoute: ApiSpeechRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
