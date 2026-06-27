@@ -260,7 +260,7 @@ function MetricGrid({ metrics }: { metrics: Metric[] }) {
 function PipelineFunnel({ funnel }: { funnel: { label: string; value: number; color: string }[] }) {
   const max = Math.max(...funnel.map((f) => f.value), 1);
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+    <div className="cc-card rounded-2xl p-5">
       <div className="flex flex-col gap-2.5">
         {funnel.map((f) => (
           <div key={f.label} className="flex items-center gap-3">
