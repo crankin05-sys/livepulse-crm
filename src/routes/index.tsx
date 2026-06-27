@@ -77,6 +77,11 @@ const steps = [
   { n: "04", title: "Get Hired", desc: "Interview with our carrier partners before you even graduate." },
 ];
 
+const partners = [
+  "Schneider", "Werner", "J.B. Hunt", "Knight-Swift", "Prime Inc.",
+  "Roehl", "C.R. England", "U.S. Xpress", "Covenant", "Marten",
+];
+
 function Home() {
   return (
     <SiteLayout>
@@ -87,16 +92,21 @@ function Home() {
           alt="Semi-truck driving on an open highway at sunset"
           width={1600}
           height={1000}
-          className="absolute inset-0 h-full w-full object-cover opacity-30"
+          className="absolute inset-0 h-full w-full object-cover opacity-30 animate-ken-burns"
         />
         <div className="absolute inset-0 bg-hero-gradient opacity-80" />
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <div className="absolute inset-0 bg-grid opacity-[0.4]" />
+
+        <div className="relative mx-auto max-w-7xl px-4 pb-40 pt-24 sm:px-6 lg:px-8 lg:pb-44 lg:pt-32">
           <div className="max-w-2xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-accent">
               <Star className="h-3.5 w-3.5" /> Rated #1 CDL school in the Midwest
             </span>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight text-primary-foreground text-balance sm:text-5xl lg:text-6xl">
-              Your career on the road starts here.
+            <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] text-primary-foreground text-balance sm:text-5xl lg:text-6xl">
+              Your career on the road{" "}
+              <span className="bg-gradient-to-r from-accent to-warning bg-clip-text text-transparent">
+                starts here.
+              </span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-primary-foreground/80">
               Get your CDL in as little as 3 weeks with hands-on training, real financing options, and job-placement support that actually works.
@@ -113,17 +123,76 @@ function Home() {
                 </Button>
               </Link>
             </div>
-            <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <div className="mt-10 grid grid-cols-2 gap-6 rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-6 backdrop-blur-sm sm:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label}>
-                  <div className="font-display text-2xl font-bold text-accent sm:text-3xl">{s.value}</div>
+                  <div className="font-display text-2xl font-bold text-accent sm:text-3xl">
+                    <CountUp value={s.value} />
+                  </div>
                   <div className="mt-1 text-xs text-primary-foreground/70">{s.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Live tracking road band with a driving truck */}
+        <div className="absolute inset-x-0 bottom-0 h-28 overflow-hidden">
+          <div className="absolute left-4 top-3 z-20 flex items-center gap-2 rounded-full border border-success/40 bg-background/80 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur sm:left-6 lg:left-8">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-success animate-live-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+            </span>
+            <Radio className="h-3.5 w-3.5 text-success" /> Live GPS fleet tracking
+          </div>
+
+          {/* asphalt */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[oklch(0.16_0.03_262)] to-[oklch(0.22_0.04_262)]">
+            {/* moving centre line */}
+            <div
+              className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 animate-road"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(to right, oklch(0.79 0.16 66) 0 60px, transparent 60px 120px)",
+                backgroundSize: "120px 100%",
+                opacity: 0.7,
+              }}
+            />
+          </div>
+
+          {/* driving truck */}
+          <div className="absolute bottom-[34px] left-0 animate-truck-drive">
+            <div className="flex items-center gap-2 rounded-lg bg-accent px-2.5 py-1.5 text-accent-foreground shadow-elevated">
+              <Truck className="h-5 w-5" />
+              <span className="text-xs font-bold">Unit 214 · 62 mph</span>
+              <Navigation className="h-3.5 w-3.5 -rotate-45" />
+            </div>
+          </div>
+        </div>
       </section>
+
+      {/* Partner marquee */}
+      <section className="border-y border-border bg-secondary/60 py-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Trusted hiring partners
+          </p>
+        </div>
+        <div className="group relative mt-4 overflow-hidden">
+          <div className="flex w-max animate-marquee gap-12 pr-12">
+            {[...partners, ...partners].map((name, i) => (
+              <span
+                key={`${name}-${i}`}
+                className="font-display text-xl font-bold text-foreground/35 transition-colors hover:text-foreground/70"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Programs */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
