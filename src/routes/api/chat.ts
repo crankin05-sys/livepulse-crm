@@ -19,6 +19,7 @@ ABOUT THE SCHOOL
 - Accredited, FMCSA ELDT-compliant CDL training in Sterling Heights, MI (6500 15 Mile Rd., Sterling Heights, MI 48312). Phone 586-838-1268, email info@ustdts.edu. Third-party CDL skills testing facility for the State of Michigan; founded in 1994, 25+ years in business.
 - 12,000+ drivers trained, 94% job-placement rate, 40+ hiring carrier partners (Schneider, Werner, J.B. Hunt, Knight-Swift, Prime Inc., Roehl, C.R. England, U.S. Xpress, Covenant, Marten).
 - Live GPS fleet tracking is used in training.
+- SERVICE AREA: We train students who live in Michigan. Prioritize and qualify Michigan-based students (Metro Detroit, Macomb, Oakland, Wayne, Genesee counties, etc.). If someone is out of state, politely note that our campus and programs serve Michigan residents and that they'd need to attend in person in Sterling Heights, MI.
 
 PROGRAMS
 - Class A CDL — tractor-trailers up to 80,000 lbs; over-the-road & regional careers; 4–7 weeks. Highest earning potential and most in-demand.
