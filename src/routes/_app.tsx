@@ -46,6 +46,16 @@ const navGroups = [
   },
 ] as const;
 
+const aiAgents = [
+  { name: "Admissions AI", icon: UserCheck, status: "Active" },
+  { name: "Funding AI", icon: Wallet, status: "Active" },
+  { name: "Appointment AI", icon: CalendarClock, status: "Active" },
+  { name: "Follow-Up AI", icon: Bell, status: "Active" },
+  { name: "Recruiting AI", icon: Megaphone, status: "Standby" },
+  { name: "Executive AI", icon: TrendingUp, status: "Active" },
+] as const;
+
+
 function AuthLayout() {
   const { session, loading, user } = useAuth();
   const navigate = useNavigate();
