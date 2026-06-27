@@ -175,3 +175,75 @@
 @utility shadow-elevated {
   box-shadow: var(--shadow-elevated);
 }
+
+/* ===== Premium motion system ===== */
+@keyframes ken-burns {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(1.12) translateX(-2%); }
+}
+@utility animate-ken-burns {
+  animation: ken-burns 24s ease-in-out infinite alternate;
+}
+
+/* Truck driving across the hero, looping */
+@keyframes truck-drive {
+  0% { transform: translateX(-22vw); opacity: 0; }
+  6% { opacity: 1; }
+  94% { opacity: 1; }
+  100% { transform: translateX(112vw); opacity: 0; }
+}
+@utility animate-truck-drive {
+  animation: truck-drive 11s linear infinite;
+}
+
+/* Scrolling road centre-line dashes */
+@keyframes road-dash {
+  from { background-position-x: 0; }
+  to { background-position-x: -120px; }
+}
+@utility animate-road {
+  animation: road-dash 0.7s linear infinite;
+}
+
+/* Live pulse */
+@keyframes live-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  70%, 100% { transform: scale(2.4); opacity: 0; }
+}
+@utility animate-live-ping {
+  animation: live-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Marquee for partner strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@utility animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Reveal on scroll */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@utility reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns, .animate-truck-drive, .animate-road, .animate-marquee, .animate-live-ping {
+    animation: none !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
