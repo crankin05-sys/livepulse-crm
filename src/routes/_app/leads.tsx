@@ -6,6 +6,9 @@ import { Search, Sparkle, Loader2, Copy, Check, Flame } from "lucide-react";
 import { leadsQuery } from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
 import { analyzeLead } from "../../lib/crm-ai.functions";
+import { DEMO_LEADS } from "../../lib/lead-gen-demo";
+import { AgentStatusCards } from "../../components/crm/AgentStatusCards";
+import { LeadActivityFeed } from "../../components/crm/LeadActivityFeed";
 import { PageHeader } from "../../components/crm/Primitives";
 import { relativeTime } from "../../lib/format";
 import { Button } from "../../components/ui/button";
@@ -175,7 +178,8 @@ function Leads() {
     else qc.invalidateQueries({ queryKey: ["leads"] });
   }
 
-  const rows = ((leads.data ?? []) as LeadRow[]).filter((l) => {
+  const merged = [...(DEMO_LEADS as unknown as LeadRow[]), ...((leads.data ?? []) as LeadRow[])];
+  const rows = merged.filter((l) => {
     const matchesQ = `${l.full_name} ${l.email} ${l.program ?? ""}`.toLowerCase().includes(q.toLowerCase());
     const matchesF = filter === "all" || l.status === filter;
     return matchesQ && matchesF;
@@ -184,6 +188,14 @@ function Leads() {
   return (
     <div>
       <PageHeader title="Leads" subtitle="Inbound applications from the website & AI assistant, updated in real time." />
+
+      <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_minmax(320px,420px)]">
+        <div className="space-y-4">
+          <AgentStatusCards />
+        </div>
+        <LeadActivityFeed />
+      </div>
+
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-56">
