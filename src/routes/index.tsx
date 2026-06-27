@@ -278,14 +278,17 @@ function Home() {
           <p className="mt-3 text-muted-foreground">A clear path to your new career in four steps.</p>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-4">
-          {steps.map((s) => (
-            <div key={s.n} className="relative rounded-2xl border border-border bg-card p-6 shadow-card">
-              <div className="font-display text-3xl font-extrabold text-accent">{s.n}</div>
-              <h3 className="mt-3 font-bold text-foreground">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-            </div>
+          {steps.map((s, i) => (
+            <Reveal key={s.n} delay={i * 100}>
+              <div className="relative h-full rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated">
+                <div className="font-display text-3xl font-extrabold text-accent">{s.n}</div>
+                <h3 className="mt-3 font-bold text-foreground">{s.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
+
       </section>
 
       {/* CTA */}
