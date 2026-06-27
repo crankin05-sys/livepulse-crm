@@ -283,7 +283,8 @@ export function AuraExecutive({ context }: { context: string }) {
                 : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10"
             }`}
           >
-            {listening ? <Mic className="h-4 w-4 animate-pulse" /> : <MicOff className="h-4 w-4" />}
+            <Mic className={`h-4 w-4 ${listening ? "animate-pulse" : ""}`} />
+            <span className="sr-only">{listening ? "Stop listening" : "Talk to Aura"}</span>
           </button>
           <input
             value={input}
