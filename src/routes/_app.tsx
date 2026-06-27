@@ -10,6 +10,12 @@ import {
   Truck,
   Menu,
   X,
+  UserCheck,
+  Wallet,
+  CalendarClock,
+  Bell,
+  Megaphone,
+  TrendingUp,
 } from "lucide-react";
 import { useAuth } from "../lib/useAuth";
 import { supabase } from "../integrations/supabase/client";
