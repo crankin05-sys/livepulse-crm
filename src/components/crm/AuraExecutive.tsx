@@ -101,16 +101,28 @@ export function AuraExecutive({ context }: { context: string }) {
     setInput("");
   }
 
-  function toggleMic() {
+  async function toggleMic() {
     if (listening) {
       recogRef.current?.stop();
       return;
     }
     const recog = getRecognition();
     if (!recog) {
-      alert("Voice input isn't supported in this browser. Try Chrome.");
+      setMicError("Voice input needs Chrome, Edge, or Safari.");
       return;
     }
+    // Explicitly request mic permission so the browser shows the prompt
+    // and we can give a clear message if it's blocked.
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((t) => t.stop());
+      }
+    } catch {
+      setMicError("Mic blocked. Allow microphone access in your browser, then try again.");
+      return;
+    }
+    setMicError(null);
     recog.lang = "en-US";
     recog.continuous = false;
     recog.interimResults = false;
@@ -119,12 +131,26 @@ export function AuraExecutive({ context }: { context: string }) {
       if (transcript) submit(transcript);
     };
     recog.onend = () => setListening(false);
-    recog.onerror = () => setListening(false);
+    recog.onerror = (e) => {
+      setListening(false);
+      if (e?.error === "not-allowed" || e?.error === "service-not-allowed") {
+        setMicError("Mic blocked. Allow microphone access in your browser, then try again.");
+      } else if (e?.error === "no-speech") {
+        setMicError("Didn't catch that — tap the mic and speak again.");
+      } else if (e?.error && e.error !== "aborted") {
+        setMicError("Voice input hit an error. Try again.");
+      }
+    };
     recogRef.current = recog;
     setListening(true);
     stopSpeaking();
-    recog.start();
+    try {
+      recog.start();
+    } catch {
+      setListening(false);
+    }
   }
+
 
   useEffect(() => {
     return () => {
