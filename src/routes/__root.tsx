@@ -11,8 +11,6 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { supabase } from "../integrations/supabase/client";
-import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -79,29 +77,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "U.S. Truck Driver Training School | CDL Training & Live CRM" },
-      {
-        name: "description",
-        content:
-          "Industry-leading CDL training with guaranteed job placement support. U.S. Truck Driver Training School trains Class A & B drivers across the Midwest.",
-      },
-      { name: "author", content: "U.S. Truck Driver Training School" },
-      { property: "og:title", content: "U.S. Truck Driver Training School" },
-      {
-        property: "og:description",
-        content: "Get your CDL and a career on the road. Hands-on training, financing, and job placement.",
-      },
+      { title: "Lovable App" },
+      { name: "description", content: "10x USTDTS Growth enhances the ustdts.edu website with a live-tracking CRM system." },
+      { name: "author", content: "Lovable" },
+      { property: "og:title", content: "Lovable App" },
+      { property: "og:description", content: "10x USTDTS Growth enhances the ustdts.edu website with a live-tracking CRM system." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:description", content: "10x USTDTS Growth enhances the ustdts.edu website with a live-tracking CRM system." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5bda224f-1423-4ecc-a19f-2e98b26c7e41/id-preview-2bf014bb--f5a52aaa-3b0c-442b-8a60-3559867aa2f8.lovable.app-1782584723255.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5bda224f-1423-4ecc-a19f-2e98b26c7e41/id-preview-2bf014bb--f5a52aaa-3b0c-442b-8a60-3559867aa2f8.lovable.app-1782584723255.png" },
     ],
     links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap",
+        href: appCss,
       },
-      { rel: "stylesheet", href: appCss },
     ],
   }),
   shellComponent: RootShell,
@@ -126,21 +119,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const router = useRouter();
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <Toaster richColors position="top-right" />
     </QueryClientProvider>
   );
 }
