@@ -19,12 +19,25 @@ export const Route = createFileRoute("/_app")({
   component: AuthLayout,
 });
 
-const nav = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/leads", label: "Leads", icon: Users },
-  { to: "/students", label: "Students", icon: GraduationCap },
-  { to: "/fleet", label: "Live Fleet", icon: MapPin },
-  { to: "/carriers", label: "Carriers", icon: Building2 },
+const navGroups = [
+  {
+    label: "Overview",
+    items: [{ to: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Admissions",
+    items: [
+      { to: "/leads", label: "Leads", icon: Users },
+      { to: "/students", label: "Students", icon: GraduationCap },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { to: "/fleet", label: "Live Fleet", icon: MapPin },
+      { to: "/carriers", label: "Carriers", icon: Building2 },
+    ],
+  },
 ] as const;
 
 function AuthLayout() {
