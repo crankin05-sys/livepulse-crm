@@ -15,9 +15,9 @@ import { Button } from "../ui/button";
 import { streamSpeech, type SpeechController } from "../../lib/speak";
 
 const SUGGESTIONS = [
-  "Give me today's executive briefing",
-  "Who are my hottest leads?",
-  "How far are we from the weekly goal?",
+  "What should I do next?",
+  "How do I get more students enrolled?",
+  "Am I on track to hit my KPIs this week?",
   "Where's the bottleneck in my pipeline?",
 ];
 
