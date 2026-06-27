@@ -39,9 +39,9 @@ export function SiteFooter() {
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-wider text-primary-foreground/90">Get in touch</h4>
           <ul className="mt-4 space-y-3 text-sm text-primary-foreground/70">
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-accent" /> (800) 555-1234</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-accent" /> admissions@ustdts.edu</li>
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-accent" /> 1234 Freight Way, Chicago, IL 60601</li>
+            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-accent" /><span>(800) 555-1234</span></li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-accent" /><span>admissions@ustdts.edu</span></li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-accent" /><span>1234 Freight Way, Chicago, IL 60601</span></li>
           </ul>
         </div>
       </div>
