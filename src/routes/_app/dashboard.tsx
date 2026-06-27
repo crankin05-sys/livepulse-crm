@@ -29,7 +29,7 @@ import { AuraExecutive } from "../../components/crm/AuraExecutive";
 
 export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({ meta: [{ title: "Executive Control Center | USTDTS CRM" }] }),
-  component: Dashboard;
+  component: Dashboard,
 });
 
 function Dashboard() {
