@@ -189,6 +189,14 @@ function Leads() {
     <div>
       <PageHeader title="Leads" subtitle="Inbound applications from the website & AI assistant, updated in real time." />
 
+      <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_minmax(320px,420px)]">
+        <div className="space-y-4">
+          <AgentStatusCards />
+        </div>
+        <LeadActivityFeed />
+      </div>
+
+
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-56">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
