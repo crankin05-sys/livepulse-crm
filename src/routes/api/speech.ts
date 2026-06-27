@@ -23,6 +23,8 @@ export const Route = createFileRoute("/api/speech")({
           method: "POST",
           headers: {
             Authorization: `Bearer ${key}`,
+            "Lovable-API-Key": key,
+            "X-Lovable-AIG-SDK": "vercel-ai-sdk",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
