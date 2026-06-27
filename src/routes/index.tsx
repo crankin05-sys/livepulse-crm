@@ -10,10 +10,14 @@ import {
   ArrowRight,
   Star,
   Clock,
+  Navigation,
+  Radio,
 } from "lucide-react";
 import heroTruck from "../assets/hero-truck.jpg";
 import { SiteLayout } from "../components/site/SiteLayout";
 import { Button } from "../components/ui/button";
+import { Reveal } from "../components/site/Reveal";
+import { CountUp } from "../components/site/CountUp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
