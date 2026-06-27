@@ -113,10 +113,10 @@ function Contact() {
             <div className="rounded-2xl bg-primary p-7 text-primary-foreground shadow-elevated">
               <h2 className="font-display text-xl font-bold">Contact admissions</h2>
               <ul className="mt-6 space-y-5 text-sm">
-                <li className="flex items-start gap-3"><Phone className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Call us</div><div className="text-primary-foreground/70">(800) 555-1234</div></div></li>
-                <li className="flex items-start gap-3"><Mail className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Email</div><div className="text-primary-foreground/70">admissions@ustdts.edu</div></div></li>
-                <li className="flex items-start gap-3"><MapPin className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Visit</div><div className="text-primary-foreground/70">1234 Freight Way, Chicago, IL 60601</div></div></li>
-                <li className="flex items-start gap-3"><Clock className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Hours</div><div className="text-primary-foreground/70">Mon–Fri 8am–6pm · Sat 9am–2pm</div></div></li>
+                <li className="flex items-start gap-3"><Phone className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Call us</div><a href="tel:+15868381268" className="text-primary-foreground/70 hover:text-accent">586-838-1268</a></div></li>
+                <li className="flex items-start gap-3"><Mail className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Email</div><a href="mailto:info@ustdts.edu" className="text-primary-foreground/70 hover:text-accent">info@ustdts.edu</a></div></li>
+                <li className="flex items-start gap-3"><MapPin className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Visit</div><div className="text-primary-foreground/70">6500 15 Mile Rd., Sterling Heights, MI 48312</div></div></li>
+                <li className="flex items-start gap-3"><Clock className="mt-0.5 h-5 w-5 text-accent" /><div><div className="font-semibold">Hours</div><div className="text-primary-foreground/70">Mon–Fri 8am–6pm · Sat by appointment</div></div></li>
               </ul>
             </div>
           </div>
