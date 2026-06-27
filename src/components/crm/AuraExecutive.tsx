@@ -29,7 +29,7 @@ type SpeechRecognitionLike = {
   stop: () => void;
   onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((e: { error?: string }) => void) | null;
 };
 
 function getRecognition(): SpeechRecognitionLike | null {
