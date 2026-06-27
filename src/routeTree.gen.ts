@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthStudentsRouteImport } from './routes/_auth/students'
 import { Route as AuthLeadsRouteImport } from './routes/_auth/leads'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
+import { Route as AuthCarriersRouteImport } from './routes/_auth/carriers'
 
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
@@ -69,6 +70,11 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthCarriersRoute = AuthCarriersRouteImport.update({
+  id: '/carriers',
+  path: '/carriers',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
+  '/carriers': typeof AuthCarriersRoute
   '/dashboard': typeof AuthDashboardRoute
   '/leads': typeof AuthLeadsRoute
   '/students': typeof AuthStudentsRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
+  '/carriers': typeof AuthCarriersRoute
   '/dashboard': typeof AuthDashboardRoute
   '/leads': typeof AuthLeadsRoute
   '/students': typeof AuthStudentsRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
+  '/_auth/carriers': typeof AuthCarriersRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/leads': typeof AuthLeadsRoute
   '/_auth/students': typeof AuthStudentsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/programs'
+    | '/carriers'
     | '/dashboard'
     | '/leads'
     | '/students'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/programs'
+    | '/carriers'
     | '/dashboard'
     | '/leads'
     | '/students'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/programs'
+    | '/_auth/carriers'
     | '/_auth/dashboard'
     | '/_auth/leads'
     | '/_auth/students'
@@ -224,16 +236,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/carriers': {
+      id: '/_auth/carriers'
+      path: '/carriers'
+      fullPath: '/carriers'
+      preLoaderRoute: typeof AuthCarriersRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
+  AuthCarriersRoute: typeof AuthCarriersRoute
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthLeadsRoute: typeof AuthLeadsRoute
   AuthStudentsRoute: typeof AuthStudentsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthCarriersRoute: AuthCarriersRoute,
   AuthDashboardRoute: AuthDashboardRoute,
   AuthLeadsRoute: AuthLeadsRoute,
   AuthStudentsRoute: AuthStudentsRoute,
