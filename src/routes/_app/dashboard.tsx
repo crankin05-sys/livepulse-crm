@@ -248,7 +248,7 @@ function MetricGrid({ metrics }: { metrics: Metric[] }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       {metrics.map((m) => (
-        <div key={m.label} className="rounded-xl border border-border bg-card p-4 shadow-card">
+        <div key={m.label} className="cc-card rounded-xl p-4">
           <div className="font-display text-2xl font-bold text-foreground">{m.value}</div>
           <div className="mt-1 text-xs leading-tight text-muted-foreground">{m.label}</div>
         </div>
