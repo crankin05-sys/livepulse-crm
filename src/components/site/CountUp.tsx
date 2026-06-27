@@ -49,7 +49,8 @@ export function CountUp({ value, className = "" }: { value: string; className?: 
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [value, target, decimals, prefix, suffix, match]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <span ref={ref} className={className}>
