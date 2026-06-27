@@ -203,22 +203,26 @@ function Home() {
           </p>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {programs.map((p) => (
-            <div key={p.title} className="group rounded-2xl border border-border bg-card p-7 shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
-                <p.icon className="h-6 w-6" />
-              </span>
-              <h3 className="mt-5 text-xl font-bold text-foreground">{p.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
-              <div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-accent-foreground/80">
-                <Clock className="h-4 w-4" /> {p.weeks}
+          {programs.map((p, i) => (
+            <Reveal key={p.title} delay={i * 100}>
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-elevated">
+                <div className="absolute inset-x-0 top-0 h-1 scale-x-0 bg-gradient-to-r from-accent to-warning transition-transform duration-300 group-hover:scale-x-100" />
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
+                  <p.icon className="h-6 w-6" />
+                </span>
+                <h3 className="mt-5 text-xl font-bold text-foreground">{p.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
+                <div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-accent-foreground/80">
+                  <Clock className="h-4 w-4" /> {p.weeks}
+                </div>
+                <Link to="/programs" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
+                  Learn more <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <Link to="/programs" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
-                Learn more <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+            </Reveal>
           ))}
         </div>
+
       </section>
 
       {/* Features */}
