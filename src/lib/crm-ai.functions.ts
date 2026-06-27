@@ -33,7 +33,7 @@ export const analyzeLead = createServerFn({ method: "POST" })
     const { createLovableAiGatewayProvider } = await import("@/lib/ai-gateway.server");
     const gateway = createLovableAiGatewayProvider(key);
 
-    const prompt = `You are the AI co-pilot for the admissions team at U.S. Truck Driver Training School (CDL school in Chicago; programs: Class A CDL, Class B CDL, Third-Party Skills Exam; funding via GI Bill, WIOA, payment plans; 94% placement).
+    const prompt = `You are the AI co-pilot for the admissions team at U.S. Truck Driver Training School (CDL school in Sterling Heights, MI; programs: Class A CDL, Class B CDL, Third-Party Skills Exam; funding via GI Bill, WIOA, payment plans; 94% placement).
 
 Analyze this lead and help the advisor act fast.
 
