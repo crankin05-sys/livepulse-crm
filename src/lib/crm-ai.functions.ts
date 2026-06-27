@@ -17,10 +17,13 @@ export const analyzeLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => LeadInput.parse(data))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
+    const { data: roleRows } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .in("role", ["admin", "staff"])
+      .limit(1);
+    const isAdmin = Array.isArray(roleRows) && roleRows.length > 0;
     if (!isAdmin) throw new Error("Forbidden");
 
     const key = process.env.LOVABLE_API_KEY;
