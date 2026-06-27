@@ -22,7 +22,7 @@ export function SiteHeader() {
             <Truck className="h-5 w-5" />
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-sm font-700 tracking-tight text-foreground">U.S. Truck Driver</span>
+            <span className="font-display text-sm font-bold tracking-tight text-foreground">U.S. Truck Driver</span>
             <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">Training School</span>
           </span>
         </Link>
