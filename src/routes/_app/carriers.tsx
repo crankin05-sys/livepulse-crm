@@ -5,7 +5,7 @@ import { carriersQuery, placementsQuery } from "../../lib/queries";
 import { PageHeader, StatCard } from "../../components/crm/Primitives";
 import { currency } from "../../lib/format";
 
-export const Route = createFileRoute("/_auth/carriers")({
+export const Route = createFileRoute("/_app/carriers")({
   head: () => ({ meta: [{ title: "Carriers | USTDTS CRM" }] }),
   component: Carriers,
 });
