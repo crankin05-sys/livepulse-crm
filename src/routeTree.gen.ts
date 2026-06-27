@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthStudentsRouteImport } from './routes/_auth/students'
 import { Route as AuthLeadsRouteImport } from './routes/_auth/leads'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 
@@ -53,6 +54,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthStudentsRoute = AuthStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthLeadsRoute = AuthLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/programs': typeof ProgramsRoute
   '/dashboard': typeof AuthDashboardRoute
   '/leads': typeof AuthLeadsRoute
+  '/students': typeof AuthStudentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/programs': typeof ProgramsRoute
   '/dashboard': typeof AuthDashboardRoute
   '/leads': typeof AuthLeadsRoute
+  '/students': typeof AuthStudentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/programs': typeof ProgramsRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/leads': typeof AuthLeadsRoute
+  '/_auth/students': typeof AuthStudentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/dashboard'
     | '/leads'
+    | '/students'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/dashboard'
     | '/leads'
+    | '/students'
   id:
     | '__root__'
     | '/'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/programs'
     | '/_auth/dashboard'
     | '/_auth/leads'
+    | '/_auth/students'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/students': {
+      id: '/_auth/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AuthStudentsRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/leads': {
       id: '/_auth/leads'
       path: '/leads'
@@ -211,11 +230,13 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthLeadsRoute: typeof AuthLeadsRoute
+  AuthStudentsRoute: typeof AuthStudentsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
   AuthLeadsRoute: AuthLeadsRoute,
+  AuthStudentsRoute: AuthStudentsRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
