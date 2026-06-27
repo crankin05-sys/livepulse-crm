@@ -1,15 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { Users, GraduationCap, MapPin, Building2, TrendingUp, DollarSign } from "lucide-react";
-import { leadsQuery, studentsQuery, vehiclesQuery, carriersQuery, placementsQuery } from "../../lib/queries";
+import { useEffect, useMemo, useState } from "react";
+import {
+  TrendingUp,
+  Target,
+  Activity,
+  Radio,
+  UserCheck,
+  Wallet,
+  CalendarClock,
+  Bell,
+  Megaphone,
+  LineChart,
+  CheckCircle2,
+  Circle,
+} from "lucide-react";
+import {
+  leadsQuery,
+  studentsQuery,
+  vehiclesQuery,
+  carriersQuery,
+  placementsQuery,
+  paymentsQuery,
+} from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
-import { PageHeader, StatCard, StatusBadge } from "../../components/crm/Primitives";
-import { relativeTime } from "../../lib/format";
+import { buildMetrics, type Metric } from "../../lib/dashboard-metrics";
+import { AuraExecutive } from "../../components/crm/AuraExecutive";
 
 export const Route = createFileRoute("/_app/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard | USTDTS CRM" }] }),
-  component: Dashboard,
+  head: () => ({ meta: [{ title: "Executive Control Center | USTDTS CRM" }] }),
+  component: Dashboard;
 });
 
 function Dashboard() {
@@ -18,85 +38,356 @@ function Dashboard() {
   const vehicles = useQuery(vehiclesQuery);
   const carriers = useQuery(carriersQuery);
   const placements = useQuery(placementsQuery);
+  const payments = useQuery(paymentsQuery);
 
-  // realtime: refetch leads on insert
   useEffect(() => {
     const channel = supabase
-      .channel("dash-leads")
+      .channel("dash-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
         leads.refetch();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
+        payments.refetch();
       })
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [leads]);
+  }, [leads, payments]);
 
-  const leadData = leads.data ?? [];
-  const studentData = students.data ?? [];
-  const newLeads = leadData.filter((l) => l.status === "new").length;
-  const activeStudents = studentData.filter((s) => ["active", "enrolled"].includes(s.status)).length;
-  const driving = (vehicles.data ?? []).filter((v) => v.status === "driving").length;
-  const openings = (carriers.data ?? []).reduce((sum, c) => sum + (c.openings ?? 0), 0);
-  const placedCount = (placements.data ?? []).length;
-  const avgProgress = studentData.length
-    ? Math.round(studentData.reduce((s, x) => s + (x.progress_pct ?? 0), 0) / studentData.length)
-    : 0;
+  const metrics = useMemo(
+    () =>
+      buildMetrics({
+        leads: leads.data ?? [],
+        students: students.data ?? [],
+        payments: payments.data ?? [],
+        placements: placements.data ?? [],
+        vehicles: vehicles.data ?? [],
+        carriers: carriers.data ?? [],
+      }),
+    [leads.data, students.data, payments.data, placements.data, vehicles.data, carriers.data],
+  );
 
   return (
-    <div>
-      <PageHeader title="Dashboard" subtitle="Real-time overview of admissions, training, and placement." />
+    <div className="space-y-8 pb-10">
+      <ControlHeader pct={metrics.revenue.pctToGoal} collected={metrics.revenue.collected} goal={metrics.revenue.goal} />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatCard icon={Users} label="New leads" value={newLeads} hint={`${leadData.length} total in pipeline`} tone="accent" />
-        <StatCard icon={GraduationCap} label="Active students" value={activeStudents} hint={`${avgProgress}% avg. progress`} />
-        <StatCard icon={MapPin} label="Trucks driving now" value={driving} hint={`${(vehicles.data ?? []).length} units tracked`} tone="success" />
-        <StatCard icon={Building2} label="Open carrier seats" value={openings} tone="accent" />
-        <StatCard icon={TrendingUp} label="Total placements" value={placedCount} tone="success" />
-        <StatCard icon={DollarSign} label="Carrier partners" value={(carriers.data ?? []).length} />
-      </div>
+      <AuraExecutive context={metrics.contextSummary} />
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-lg font-bold text-foreground">Latest leads</h2>
-            <span className="flex items-center gap-1.5 text-xs font-medium text-success">
-              <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-success" /></span>
-              Live
+      <Section title="Revenue" icon={Wallet} accent="success">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {metrics.revenue.cards.map((m, i) => (
+            <BigMetric key={m.label} m={m} highlight={i === 0} />
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Lead Pipeline" icon={Activity} accent="info">
+        <PipelineFunnel funnel={metrics.funnel} />
+        <ColorLegend />
+      </Section>
+
+      <Section title="Student Pipeline" icon={UserCheck} accent="info">
+        <MetricGrid metrics={metrics.pipeline} />
+      </Section>
+
+      <Section title="KPI Tracker" icon={LineChart} accent="accent">
+        <MetricGrid metrics={metrics.kpi} />
+      </Section>
+
+      <Section title="Daily Executive Snapshot" icon={Target} accent="accent">
+        <MetricGrid metrics={metrics.executive} />
+      </Section>
+
+      <Section title="Lead Qualification Engine" icon={Radio} accent="info">
+        <QualificationEngine />
+      </Section>
+
+      <Section title="Specialized AI Agents" icon={Megaphone} accent="accent">
+        <AgentsGrid />
+      </Section>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+function ControlHeader({ pct, collected, goal }: { pct: number; collected: number; goal: number }) {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const hour = now?.getHours() ?? 9;
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary to-[oklch(0.2_0.05_265)] p-6 text-white shadow-card">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+      <div className="relative flex flex-wrap items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-medium text-[oklch(0.79_0.16_66)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[oklch(0.66_0.14_152)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[oklch(0.66_0.14_152)]" />
             </span>
+            LIVE · EXECUTIVE CONTROL CENTER
           </div>
-          <div className="space-y-2">
-            {leadData.slice(0, 6).map((l) => (
-              <div key={l.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/60 px-3 py-2.5">
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-medium text-foreground">{l.full_name}</div>
-                  <div className="truncate text-xs text-muted-foreground">{l.program ?? "—"} · {relativeTime(l.created_at)}</div>
-                </div>
-                <StatusBadge status={l.status} />
-              </div>
-            ))}
-            {leadData.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No leads yet.</p>}
-          </div>
+          <h1 className="mt-2 font-display text-3xl font-bold">{greeting}, Tyler</h1>
+          <p className="mt-1 text-sm text-white/70">
+            {now
+              ? now.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                }) +
+                " · " +
+                now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+              : "Loading live feed…"}
+          </p>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-          <h2 className="mb-4 font-display text-lg font-bold text-foreground">Training progress</h2>
-          <div className="space-y-3">
-            {studentData.slice(0, 6).map((s) => (
-              <div key={s.id}>
-                <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="truncate font-medium text-foreground">{s.full_name}</span>
-                  <span className="text-muted-foreground">{s.progress_pct ?? 0}%</span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-accent" style={{ width: `${s.progress_pct ?? 0}%` }} />
-                </div>
-              </div>
-            ))}
-            {studentData.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No students yet.</p>}
+        <div className="flex items-center gap-5">
+          <GoalRing pct={pct} />
+          <div>
+            <div className="text-xs uppercase tracking-wide text-white/60">Weekly Goal</div>
+            <div className="font-display text-2xl font-bold">
+              ${Math.round(collected / 1000)}k
+              <span className="text-base font-medium text-white/50"> / ${Math.round(goal / 1000)}k</span>
+            </div>
+            <div className="text-xs text-white/60">collected this week</div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function GoalRing({ pct }: { pct: number }) {
+  const r = 30;
+  const c = 2 * Math.PI * r;
+  const off = c - (pct / 100) * c;
+  return (
+    <div className="relative h-20 w-20">
+      <svg viewBox="0 0 80 80" className="h-20 w-20 -rotate-90">
+        <circle cx="40" cy="40" r={r} fill="none" stroke="white" strokeOpacity="0.12" strokeWidth="7" />
+        <circle
+          cx="40"
+          cy="40"
+          r={r}
+          fill="none"
+          stroke="oklch(0.79 0.16 66)"
+          strokeWidth="7"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={off}
+          style={{ transition: "stroke-dashoffset 1s ease" }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center font-display text-lg font-bold">
+        {pct}%
+      </div>
+    </div>
+  );
+}
+
+function Section({
+  title,
+  icon: Icon,
+  accent,
+  children,
+}: {
+  title: string;
+  icon: typeof Target;
+  accent: "success" | "info" | "accent";
+  children: React.ReactNode;
+}) {
+  const tone =
+    accent === "success"
+      ? "bg-success/15 text-success"
+      : accent === "info"
+        ? "bg-info/15 text-info"
+        : "bg-accent/15 text-accent-foreground";
+  return (
+    <section>
+      <div className="mb-4 flex items-center gap-2.5">
+        <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${tone}`}>
+          <Icon className="h-4 w-4" />
+        </span>
+        <h2 className="font-display text-xl font-bold text-foreground">{title}</h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function BigMetric({ m, highlight }: { m: Metric; highlight?: boolean }) {
+  return (
+    <div
+      className={`rounded-2xl border p-5 shadow-card ${
+        highlight
+          ? "border-accent/40 bg-accent/10"
+          : "border-border bg-card"
+      }`}
+    >
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{m.label}</div>
+      <div className="mt-2 font-display text-2xl font-bold text-foreground">{m.value}</div>
+      {m.hint && <div className="mt-1 text-xs font-medium text-success">{m.hint}</div>}
+    </div>
+  );
+}
+
+function MetricGrid({ metrics }: { metrics: Metric[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      {metrics.map((m) => (
+        <div key={m.label} className="rounded-xl border border-border bg-card p-4 shadow-card">
+          <div className="font-display text-2xl font-bold text-foreground">{m.value}</div>
+          <div className="mt-1 text-xs leading-tight text-muted-foreground">{m.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PipelineFunnel({ funnel }: { funnel: { label: string; value: number; color: string }[] }) {
+  const max = Math.max(...funnel.map((f) => f.value), 1);
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+      <div className="flex flex-col gap-2.5">
+        {funnel.map((f) => (
+          <div key={f.label} className="flex items-center gap-3">
+            <div className="w-36 shrink-0 text-xs font-medium text-foreground">{f.label}</div>
+            <div className="h-7 flex-1 overflow-hidden rounded-lg bg-muted">
+              <div
+                className="flex h-full items-center justify-end rounded-lg px-2 text-xs font-bold text-white transition-all duration-700"
+                style={{
+                  width: `${Math.max((f.value / max) * 100, 8)}%`,
+                  backgroundColor: f.color,
+                }}
+              >
+                {f.value}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const LEGEND = [
+  { label: "Ready to enroll", color: "var(--color-success)" },
+  { label: "Appointment booked", color: "var(--color-info)" },
+  { label: "Needs follow-up", color: "var(--color-accent)" },
+  { label: "Waiting on financing", color: "var(--color-warning)" },
+  { label: "Grant process", color: "oklch(0.55 0.18 300)" },
+  { label: "Ineligible", color: "var(--color-destructive)" },
+  { label: "Lost lead", color: "oklch(0.6 0 0)" },
+];
+
+function ColorLegend() {
+  return (
+    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+      {LEGEND.map((l) => (
+        <span key={l.label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: l.color }} />
+          {l.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const STAGES = [
+  { n: 1, title: "Basic Information", items: ["Name", "Phone", "Email", "Zip", "Age", "Start date"] },
+  { n: 2, title: "Program Qualification", items: ["MI license", "Age check", "DOT physical", "Drug screen", "DUI / violations", "CDL restrictions"] },
+  { n: 3, title: "Intent", items: ["ASAP", "Within 30 days", "Within 90 days", "Researching"] },
+  { n: 4, title: "Payment Qualification", items: ["Cash", "Financing", "Employer", "Grant", "Military"] },
+  { n: 5, title: "Funding Logic", items: ["Urgent → cash / financing", "Willing to wait → grants", "No upfront promises"] },
+  { n: 6, title: "Financing Logic", items: ["Climb Credit", "Liberty", "Submitted / Pending", "Approved / Denied"] },
+  { n: 7, title: "Human Handoff", items: ["Identity ✓", "Qualified ✓", "Funding ✓", "Eligible ✓", "Appt requested"] },
+];
+
+function QualificationEngine() {
+  return (
+    <div>
+      <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+        Every lead is scored and moved through a 7-stage qualification flow before reaching a human.
+        AI handles repetitive qualification so admissions only talk to prospects who are ready.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+        {STAGES.map((s, i) => (
+          <div key={s.n} className="relative rounded-2xl border border-border bg-card p-4 shadow-card">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 font-display text-sm font-bold text-primary">
+                {s.n}
+              </span>
+              <span className="text-sm font-bold text-foreground">{s.title}</span>
+            </div>
+            <ul className="mt-3 space-y-1.5">
+              {s.items.map((it) => (
+                <li key={it} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  {i < 2 ? (
+                    <CheckCircle2 className="h-3 w-3 shrink-0 text-success" />
+                  ) : (
+                    <Circle className="h-3 w-3 shrink-0 text-muted-foreground/50" />
+                  )}
+                  {it}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const AGENTS = [
+  { name: "Admissions AI", role: "Qualifies leads & answers common questions", icon: UserCheck, status: "Active" },
+  { name: "Funding AI", role: "Finds the right payment path — never guarantees grants", icon: Wallet, status: "Active" },
+  { name: "Appointment AI", role: "Schedules consultations & sends reminders", icon: CalendarClock, status: "Active" },
+  { name: "Follow-Up AI", role: "Nurtures leads via email & SMS", icon: Bell, status: "Active" },
+  { name: "Recruiting AI", role: "Finds potential CDL students through outreach", icon: Megaphone, status: "Standby" },
+  { name: "Executive AI", role: "Summarizes KPIs, bottlenecks & weekly performance", icon: TrendingUp, status: "Active" },
+];
+
+function AgentsGrid() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {AGENTS.map((a) => {
+        const Icon = a.icon;
+        const live = a.status === "Active";
+        return (
+          <div key={a.name} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-5 shadow-card">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Icon className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-display text-sm font-bold text-foreground">{a.name}</span>
+                <span
+                  className={`flex items-center gap-1 text-[10px] font-bold uppercase ${live ? "text-success" : "text-muted-foreground"}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-success animate-pulse" : "bg-muted-foreground"}`} />
+                  {a.status}
+                </span>
+              </div>
+              <p className="mt-1 text-xs leading-snug text-muted-foreground">{a.role}</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
