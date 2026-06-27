@@ -114,6 +114,36 @@ function AuthLayout() {
             })}
           </div>
         ))}
+
+        <div className="space-y-1 pt-1">
+          <div className="flex items-center justify-between px-3 pb-1">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-sidebar-foreground/40">
+              AI Agents
+            </p>
+            <span className="flex items-center gap-1 text-[0.6rem] font-semibold uppercase text-success">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              {aiAgents.filter((a) => a.status === "Active").length} live
+            </span>
+          </div>
+          {aiAgents.map((agent) => {
+            const live = agent.status === "Active";
+            return (
+              <div
+                key={agent.name}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70"
+              >
+                <agent.icon className="h-4.5 w-4.5 shrink-0" />
+                <span className="flex-1 truncate">{agent.name}</span>
+                <span
+                  className={`h-2 w-2 shrink-0 rounded-full ${
+                    live ? "bg-success animate-pulse" : "bg-muted-foreground/50"
+                  }`}
+                  title={agent.status}
+                />
+              </div>
+            );
+          })}
+        </div>
       </nav>
       <div className="border-t border-sidebar-border p-3">
         <div className="px-2 py-2 text-xs text-sidebar-foreground/60 truncate">{user?.email}</div>
