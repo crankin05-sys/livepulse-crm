@@ -29,7 +29,7 @@ export const analyzeLead = createServerFn({ method: "POST" })
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
 
-    const { generateText, Output } = await import("ai");
+    const { generateText } = await import("ai");
     const { createLovableAiGatewayProvider } = await import("@/lib/ai-gateway.server");
     const gateway = createLovableAiGatewayProvider(key);
 
@@ -47,22 +47,34 @@ Current status: ${data.status}
 Lead score: ${data.score}
 Message/notes: ${data.message ?? "(none)"}
 
-Write a friendly, professional follow-up email draft (under 120 words) that moves them toward enrolling or booking a call.`;
+Return ONLY a JSON object (no markdown, no commentary) with exactly these keys:
+- "summary": 2-3 sentence summary of who this lead is and their intent
+- "intent": one of "hot", "warm", or "cold" (how ready to enroll)
+- "next_action": one concrete next step for the advisor
+- "draft_reply": a friendly, professional follow-up email body (under 120 words) that moves them toward enrolling or booking a call`;
+
+    const Result = z.object({
+      summary: z.string(),
+      intent: z.enum(["hot", "warm", "cold"]),
+      next_action: z.string(),
+      draft_reply: z.string(),
+    });
+
+    const extractJson = (text: string) => {
+      const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      const body = fenced ? fenced[1] : text;
+      const start = body.indexOf("{");
+      const end = body.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("No JSON found in AI response");
+      return JSON.parse(body.slice(start, end + 1));
+    };
 
     try {
-      const { output } = await generateText({
+      const { text } = await generateText({
         model: gateway("google/gemini-3-flash-preview"),
-        output: Output.object({
-          schema: z.object({
-            summary: z.string().describe("2-3 sentence summary of who this lead is and intent"),
-            intent: z.enum(["hot", "warm", "cold"]).describe("How ready to enroll"),
-            next_action: z.string().describe("One concrete next step for the advisor"),
-            draft_reply: z.string().describe("Ready-to-send follow-up email body"),
-          }),
-        }),
         prompt,
       });
-      return output;
+      return Result.parse(extractJson(text));
     } catch (e) {
       const msg = e instanceof Error ? e.message : "AI request failed";
       throw new Error(msg);
