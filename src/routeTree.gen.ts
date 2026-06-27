@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as FunnelRouteImport } from './routes/funnel'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -28,6 +29,11 @@ import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FunnelRoute = FunnelRouteImport.update({
+  id: '/funnel',
+  path: '/funnel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
+  '/funnel': typeof FunnelRoute
   '/programs': typeof ProgramsRoute
   '/carriers': typeof AppCarriersRoute
   '/dashboard': typeof AppDashboardRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
+  '/funnel': typeof FunnelRoute
   '/programs': typeof ProgramsRoute
   '/carriers': typeof AppCarriersRoute
   '/dashboard': typeof AppDashboardRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
+  '/funnel': typeof FunnelRoute
   '/programs': typeof ProgramsRoute
   '/_app/carriers': typeof AppCarriersRoute
   '/_app/dashboard': typeof AppDashboardRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/careers'
     | '/contact'
+    | '/funnel'
     | '/programs'
     | '/carriers'
     | '/dashboard'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/careers'
     | '/contact'
+    | '/funnel'
     | '/programs'
     | '/carriers'
     | '/dashboard'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/careers'
     | '/contact'
+    | '/funnel'
     | '/programs'
     | '/_app/carriers'
     | '/_app/dashboard'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
+  FunnelRoute: typeof FunnelRoute
   ProgramsRoute: typeof ProgramsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExecutiveChatRoute: typeof ApiExecutiveChatRoute
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/programs'
       fullPath: '/programs'
       preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funnel': {
+      id: '/funnel'
+      path: '/funnel'
+      fullPath: '/funnel'
+      preLoaderRoute: typeof FunnelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -350,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,
+  FunnelRoute: FunnelRoute,
   ProgramsRoute: ProgramsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExecutiveChatRoute: ApiExecutiveChatRoute,
