@@ -107,6 +107,7 @@ function Dashboard() {
       <Section title="Specialized AI Agents" icon={Megaphone} accent="accent">
         <AgentsGrid />
       </Section>
+      </div>
     </div>
   );
 }
