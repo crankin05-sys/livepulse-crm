@@ -301,7 +301,16 @@ export function AuraExecutive({ context }: { context: string }) {
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
+
+        <p className="relative mt-2 text-[11px] text-white/45">
+          {micError ? (
+            <span className="text-[oklch(0.79_0.16_66)]">{micError}</span>
+          ) : (
+            <>Tap the mic and talk — Aura listens, then replies out loud.</>
+          )}
+        </p>
       </div>
+
     </div>
   );
 }
