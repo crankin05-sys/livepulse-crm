@@ -3,7 +3,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import {
   Mic,
-  MicOff,
+  
   Send,
   Loader2,
   Volume2,
