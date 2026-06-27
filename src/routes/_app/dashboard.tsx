@@ -325,7 +325,7 @@ function QualificationEngine() {
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
         {STAGES.map((s, i) => (
-          <div key={s.n} className="relative rounded-2xl border border-border bg-card p-4 shadow-card">
+          <div key={s.n} className="cc-card relative rounded-2xl p-4">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 font-display text-sm font-bold text-primary">
                 {s.n}
