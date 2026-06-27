@@ -55,6 +55,7 @@ export function AuraExecutive({ context }: { context: string }) {
   const [voiceOn, setVoiceOn] = useState(true);
   const [speaking, setSpeaking] = useState(false);
   const [level, setLevel] = useState(0);
+  const [micError, setMicError] = useState<string | null>(null);
   const recogRef = useRef<SpeechRecognitionLike | null>(null);
   const speechRef = useRef<SpeechController | null>(null);
   const voiceOnRef = useRef(voiceOn);
