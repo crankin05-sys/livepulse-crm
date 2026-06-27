@@ -235,11 +235,7 @@ function Section({
 function BigMetric({ m, highlight }: { m: Metric; highlight?: boolean }) {
   return (
     <div
-      className={`rounded-2xl border p-5 shadow-card ${
-        highlight
-          ? "border-accent/40 bg-accent/10"
-          : "border-border bg-card"
-      }`}
+      className={`rounded-2xl p-5 ${highlight ? "cc-card-glow" : "cc-card"}`}
     >
       <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{m.label}</div>
       <div className="mt-2 font-display text-2xl font-bold text-foreground">{m.value}</div>
