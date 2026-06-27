@@ -10,6 +10,7 @@ import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { leadSummaryForPrompt } from "@/lib/lead-gen-demo";
 
 type ChatRequestBody = { messages?: unknown };
 
