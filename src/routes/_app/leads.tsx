@@ -178,7 +178,8 @@ function Leads() {
     else qc.invalidateQueries({ queryKey: ["leads"] });
   }
 
-  const rows = ((leads.data ?? []) as LeadRow[]).filter((l) => {
+  const merged = [...(DEMO_LEADS as unknown as LeadRow[]), ...((leads.data ?? []) as LeadRow[])];
+  const rows = merged.filter((l) => {
     const matchesQ = `${l.full_name} ${l.email} ${l.program ?? ""}`.toLowerCase().includes(q.toLowerCase());
     const matchesF = filter === "all" || l.status === filter;
     return matchesQ && matchesF;
