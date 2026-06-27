@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { leadsQuery } from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
-import { PageHeader, StatusBadge } from "../../components/crm/Primitives";
+import { PageHeader } from "../../components/crm/Primitives";
 import { relativeTime } from "../../lib/format";
 import { toast } from "sonner";
 
