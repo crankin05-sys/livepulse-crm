@@ -3,7 +3,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import {
   Mic,
-  MicOff,
+  
   Send,
   Loader2,
   Volume2,
@@ -29,7 +29,7 @@ type SpeechRecognitionLike = {
   stop: () => void;
   onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((e: { error?: string }) => void) | null;
 };
 
 function getRecognition(): SpeechRecognitionLike | null {
@@ -55,6 +55,7 @@ export function AuraExecutive({ context }: { context: string }) {
   const [voiceOn, setVoiceOn] = useState(true);
   const [speaking, setSpeaking] = useState(false);
   const [level, setLevel] = useState(0);
+  const [micError, setMicError] = useState<string | null>(null);
   const recogRef = useRef<SpeechRecognitionLike | null>(null);
   const speechRef = useRef<SpeechController | null>(null);
   const voiceOnRef = useRef(voiceOn);
@@ -100,16 +101,28 @@ export function AuraExecutive({ context }: { context: string }) {
     setInput("");
   }
 
-  function toggleMic() {
+  async function toggleMic() {
     if (listening) {
       recogRef.current?.stop();
       return;
     }
     const recog = getRecognition();
     if (!recog) {
-      alert("Voice input isn't supported in this browser. Try Chrome.");
+      setMicError("Voice input needs Chrome, Edge, or Safari.");
       return;
     }
+    // Explicitly request mic permission so the browser shows the prompt
+    // and we can give a clear message if it's blocked.
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((t) => t.stop());
+      }
+    } catch {
+      setMicError("Mic blocked. Allow microphone access in your browser, then try again.");
+      return;
+    }
+    setMicError(null);
     recog.lang = "en-US";
     recog.continuous = false;
     recog.interimResults = false;
@@ -118,12 +131,26 @@ export function AuraExecutive({ context }: { context: string }) {
       if (transcript) submit(transcript);
     };
     recog.onend = () => setListening(false);
-    recog.onerror = () => setListening(false);
+    recog.onerror = (e) => {
+      setListening(false);
+      if (e?.error === "not-allowed" || e?.error === "service-not-allowed") {
+        setMicError("Mic blocked. Allow microphone access in your browser, then try again.");
+      } else if (e?.error === "no-speech") {
+        setMicError("Didn't catch that — tap the mic and speak again.");
+      } else if (e?.error && e.error !== "aborted") {
+        setMicError("Voice input hit an error. Try again.");
+      }
+    };
     recogRef.current = recog;
     setListening(true);
     stopSpeaking();
-    recog.start();
+    try {
+      recog.start();
+    } catch {
+      setListening(false);
+    }
   }
+
 
   useEffect(() => {
     return () => {
@@ -256,7 +283,8 @@ export function AuraExecutive({ context }: { context: string }) {
                 : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10"
             }`}
           >
-            {listening ? <Mic className="h-4 w-4 animate-pulse" /> : <MicOff className="h-4 w-4" />}
+            <Mic className={`h-4 w-4 ${listening ? "animate-pulse" : ""}`} />
+            <span className="sr-only">{listening ? "Stop listening" : "Talk to Aura"}</span>
           </button>
           <input
             value={input}
@@ -273,7 +301,16 @@ export function AuraExecutive({ context }: { context: string }) {
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
+
+        <p className="relative mt-2 text-[11px] text-white/45">
+          {micError ? (
+            <span className="text-[oklch(0.79_0.16_66)]">{micError}</span>
+          ) : (
+            <>Tap the mic and talk — Aura listens, then replies out loud.</>
+          )}
+        </p>
       </div>
+
     </div>
   );
 }
