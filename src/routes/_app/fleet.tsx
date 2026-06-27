@@ -7,7 +7,7 @@ import { supabase } from "../../integrations/supabase/client";
 import { PageHeader, StatCard } from "../../components/crm/Primitives";
 import { relativeTime } from "../../lib/format";
 
-export const Route = createFileRoute("/_auth/fleet")({
+export const Route = createFileRoute("/_app/fleet")({
   head: () => ({ meta: [{ title: "Live Fleet | USTDTS CRM" }] }),
   component: Fleet,
 });

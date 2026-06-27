@@ -15,7 +15,7 @@ import { useAuth } from "../lib/useAuth";
 import { supabase } from "../integrations/supabase/client";
 import { Button } from "../components/ui/button";
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_app")({
   component: AuthLayout,
 });
 

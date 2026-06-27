@@ -6,7 +6,7 @@ import { studentsQuery } from "../../lib/queries";
 import { PageHeader, StatusBadge } from "../../components/crm/Primitives";
 import { dateShort, initials } from "../../lib/format";
 
-export const Route = createFileRoute("/_auth/students")({
+export const Route = createFileRoute("/_app/students")({
   head: () => ({ meta: [{ title: "Students | USTDTS CRM" }] }),
   component: Students,
 });

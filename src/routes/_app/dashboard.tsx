@@ -7,7 +7,7 @@ import { supabase } from "../../integrations/supabase/client";
 import { PageHeader, StatCard, StatusBadge } from "../../components/crm/Primitives";
 import { relativeTime } from "../../lib/format";
 
-export const Route = createFileRoute("/_auth/dashboard")({
+export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard | USTDTS CRM" }] }),
   component: Dashboard,
 });

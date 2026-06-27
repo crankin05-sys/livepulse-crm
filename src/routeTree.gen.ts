@@ -14,13 +14,13 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthStudentsRouteImport } from './routes/_auth/students'
-import { Route as AuthLeadsRouteImport } from './routes/_auth/leads'
-import { Route as AuthFleetRouteImport } from './routes/_auth/fleet'
-import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
-import { Route as AuthCarriersRouteImport } from './routes/_auth/carriers'
+import { Route as AppStudentsRouteImport } from './routes/_app/students'
+import { Route as AppLeadsRouteImport } from './routes/_app/leads'
+import { Route as AppFleetRouteImport } from './routes/_app/fleet'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
 
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
@@ -47,8 +47,8 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -56,30 +56,30 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthStudentsRoute = AuthStudentsRouteImport.update({
+const AppStudentsRoute = AppStudentsRouteImport.update({
   id: '/students',
   path: '/students',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthLeadsRoute = AuthLeadsRouteImport.update({
+const AppLeadsRoute = AppLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthFleetRoute = AuthFleetRouteImport.update({
+const AppFleetRoute = AppFleetRouteImport.update({
   id: '/fleet',
   path: '/fleet',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthDashboardRoute = AuthDashboardRouteImport.update({
+const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthCarriersRoute = AuthCarriersRouteImport.update({
+const AppCarriersRoute = AppCarriersRouteImport.update({
   id: '/carriers',
   path: '/carriers',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -89,11 +89,11 @@ export interface FileRoutesByFullPath {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
-  '/carriers': typeof AuthCarriersRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/fleet': typeof AuthFleetRoute
-  '/leads': typeof AuthLeadsRoute
-  '/students': typeof AuthStudentsRoute
+  '/carriers': typeof AppCarriersRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/fleet': typeof AppFleetRoute
+  '/leads': typeof AppLeadsRoute
+  '/students': typeof AppStudentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,26 +102,26 @@ export interface FileRoutesByTo {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
-  '/carriers': typeof AuthCarriersRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/fleet': typeof AuthFleetRoute
-  '/leads': typeof AuthLeadsRoute
-  '/students': typeof AuthStudentsRoute
+  '/carriers': typeof AppCarriersRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/fleet': typeof AppFleetRoute
+  '/leads': typeof AppLeadsRoute
+  '/students': typeof AppStudentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
+  '/_app': typeof AppRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/programs': typeof ProgramsRoute
-  '/_auth/carriers': typeof AuthCarriersRoute
-  '/_auth/dashboard': typeof AuthDashboardRoute
-  '/_auth/fleet': typeof AuthFleetRoute
-  '/_auth/leads': typeof AuthLeadsRoute
-  '/_auth/students': typeof AuthStudentsRoute
+  '/_app/carriers': typeof AppCarriersRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/fleet': typeof AppFleetRoute
+  '/_app/leads': typeof AppLeadsRoute
+  '/_app/students': typeof AppStudentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -153,22 +153,22 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/_auth'
+    | '/_app'
     | '/about'
     | '/auth'
     | '/careers'
     | '/contact'
     | '/programs'
-    | '/_auth/carriers'
-    | '/_auth/dashboard'
-    | '/_auth/fleet'
-    | '/_auth/leads'
-    | '/_auth/students'
+    | '/_app/carriers'
+    | '/_app/dashboard'
+    | '/_app/fleet'
+    | '/_app/leads'
+    | '/_app/students'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   CareersRoute: typeof CareersRoute
@@ -213,11 +213,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
+    '/_app': {
+      id: '/_app'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -227,65 +227,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/students': {
-      id: '/_auth/students'
+    '/_app/students': {
+      id: '/_app/students'
       path: '/students'
       fullPath: '/students'
-      preLoaderRoute: typeof AuthStudentsRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AppStudentsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_auth/leads': {
-      id: '/_auth/leads'
+    '/_app/leads': {
+      id: '/_app/leads'
       path: '/leads'
       fullPath: '/leads'
-      preLoaderRoute: typeof AuthLeadsRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AppLeadsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_auth/fleet': {
-      id: '/_auth/fleet'
+    '/_app/fleet': {
+      id: '/_app/fleet'
       path: '/fleet'
       fullPath: '/fleet'
-      preLoaderRoute: typeof AuthFleetRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AppFleetRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_auth/carriers': {
-      id: '/_auth/carriers'
+    '/_app/carriers': {
+      id: '/_app/carriers'
       path: '/carriers'
       fullPath: '/carriers'
-      preLoaderRoute: typeof AuthCarriersRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AppCarriersRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface AuthRouteChildren {
-  AuthCarriersRoute: typeof AuthCarriersRoute
-  AuthDashboardRoute: typeof AuthDashboardRoute
-  AuthFleetRoute: typeof AuthFleetRoute
-  AuthLeadsRoute: typeof AuthLeadsRoute
-  AuthStudentsRoute: typeof AuthStudentsRoute
+interface AppRouteChildren {
+  AppCarriersRoute: typeof AppCarriersRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppFleetRoute: typeof AppFleetRoute
+  AppLeadsRoute: typeof AppLeadsRoute
+  AppStudentsRoute: typeof AppStudentsRoute
 }
 
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthCarriersRoute: AuthCarriersRoute,
-  AuthDashboardRoute: AuthDashboardRoute,
-  AuthFleetRoute: AuthFleetRoute,
-  AuthLeadsRoute: AuthLeadsRoute,
-  AuthStudentsRoute: AuthStudentsRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppCarriersRoute: AppCarriersRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppFleetRoute: AppFleetRoute,
+  AppLeadsRoute: AppLeadsRoute,
+  AppStudentsRoute: AppStudentsRoute,
 }
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   CareersRoute: CareersRoute,
