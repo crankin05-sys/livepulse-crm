@@ -69,7 +69,8 @@ function Dashboard() {
   );
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="dark cc-shell -m-4 min-h-screen rounded-none p-4 text-foreground lg:-m-8 lg:p-8">
+      <div className="space-y-8 pb-10">
       <ControlHeader pct={metrics.revenue.pctToGoal} collected={metrics.revenue.collected} goal={metrics.revenue.goal} />
 
       <AuraExecutive context={metrics.contextSummary} />
