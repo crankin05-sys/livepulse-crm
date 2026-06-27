@@ -69,7 +69,8 @@ function Dashboard() {
   );
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="dark cc-shell -m-4 min-h-screen rounded-none p-4 text-foreground lg:-m-8 lg:p-8">
+      <div className="space-y-8 pb-10">
       <ControlHeader pct={metrics.revenue.pctToGoal} collected={metrics.revenue.collected} goal={metrics.revenue.goal} />
 
       <AuraExecutive context={metrics.contextSummary} />
@@ -106,6 +107,7 @@ function Dashboard() {
       <Section title="Specialized AI Agents" icon={Megaphone} accent="accent">
         <AgentsGrid />
       </Section>
+      </div>
     </div>
   );
 }
@@ -233,11 +235,7 @@ function Section({
 function BigMetric({ m, highlight }: { m: Metric; highlight?: boolean }) {
   return (
     <div
-      className={`rounded-2xl border p-5 shadow-card ${
-        highlight
-          ? "border-accent/40 bg-accent/10"
-          : "border-border bg-card"
-      }`}
+      className={`rounded-2xl p-5 ${highlight ? "cc-card-glow" : "cc-card"}`}
     >
       <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{m.label}</div>
       <div className="mt-2 font-display text-2xl font-bold text-foreground">{m.value}</div>
@@ -250,7 +248,7 @@ function MetricGrid({ metrics }: { metrics: Metric[] }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       {metrics.map((m) => (
-        <div key={m.label} className="rounded-xl border border-border bg-card p-4 shadow-card">
+        <div key={m.label} className="cc-card rounded-xl p-4">
           <div className="font-display text-2xl font-bold text-foreground">{m.value}</div>
           <div className="mt-1 text-xs leading-tight text-muted-foreground">{m.label}</div>
         </div>
@@ -262,7 +260,7 @@ function MetricGrid({ metrics }: { metrics: Metric[] }) {
 function PipelineFunnel({ funnel }: { funnel: { label: string; value: number; color: string }[] }) {
   const max = Math.max(...funnel.map((f) => f.value), 1);
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+    <div className="cc-card rounded-2xl p-5">
       <div className="flex flex-col gap-2.5">
         {funnel.map((f) => (
           <div key={f.label} className="flex items-center gap-3">
@@ -327,7 +325,7 @@ function QualificationEngine() {
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
         {STAGES.map((s, i) => (
-          <div key={s.n} className="relative rounded-2xl border border-border bg-card p-4 shadow-card">
+          <div key={s.n} className="cc-card relative rounded-2xl p-4">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 font-display text-sm font-bold text-primary">
                 {s.n}
@@ -369,7 +367,7 @@ function AgentsGrid() {
         const Icon = a.icon;
         const live = a.status === "Active";
         return (
-          <div key={a.name} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-5 shadow-card">
+          <div key={a.name} className="cc-card flex items-start gap-3 rounded-2xl p-5">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Icon className="h-5 w-5" />
             </span>
