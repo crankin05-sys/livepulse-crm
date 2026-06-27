@@ -367,7 +367,7 @@ function AgentsGrid() {
         const Icon = a.icon;
         const live = a.status === "Active";
         return (
-          <div key={a.name} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-5 shadow-card">
+          <div key={a.name} className="cc-card flex items-start gap-3 rounded-2xl p-5">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Icon className="h-5 w-5" />
             </span>
