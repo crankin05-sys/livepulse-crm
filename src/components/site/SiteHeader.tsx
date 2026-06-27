@@ -80,8 +80,8 @@ export function SiteHeader() {
                 <Button variant="accent" className="w-full" size="sm">Apply Now</Button>
               </Link>
             </div>
-            <a href="tel:+18005551234" className="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
-              <Phone className="h-4 w-4" /> (800) 555-1234
+            <a href="tel:+15868381268" className="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
+              <Phone className="h-4 w-4" /> 586-838-1268
             </a>
           </nav>
         </div>
