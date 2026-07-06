@@ -24,7 +24,7 @@ import {
   paymentsQuery,
 } from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
-import { buildMetrics, type Metric } from "../../lib/dashboard-metrics";
+import { buildMetrics, type Metric, type DashboardMetrics } from "../../lib/dashboard-metrics";
 import { AuraExecutive } from "../../components/crm/AuraExecutive";
 
 export const Route = createFileRoute("/_app/dashboard")({
