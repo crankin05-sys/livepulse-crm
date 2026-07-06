@@ -202,6 +202,25 @@ function Leads() {
     <div>
       <PageHeader title="Leads" subtitle="Inbound applications from the website & AI assistant, updated in real time." />
 
+      <div className="mb-6 grid gap-3 sm:grid-cols-4">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">In Pipeline</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{activePipeline.length}</div>
+        </div>
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-destructive">🔥 Hot</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.hot}</div>
+        </div>
+        <div className="rounded-2xl border border-warning/30 bg-warning/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-warning-foreground">🌤 Warm</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.warm}</div>
+        </div>
+        <div className="rounded-2xl border border-info/30 bg-info/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-info-foreground">❄️ Cold</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.cold}</div>
+        </div>
+      </div>
+
       <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_minmax(320px,420px)]">
         <div className="space-y-4">
           <AgentStatusCards />
