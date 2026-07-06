@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const LeadInput = z.object({
+  id: z.string().uuid().optional(),
   full_name: z.string(),
   email: z.string(),
   phone: z.string().nullable().optional(),
@@ -12,6 +13,9 @@ const LeadInput = z.object({
   score: z.number(),
   source: z.string(),
 });
+
+// AI-judged intent -> persisted lead score, so the hot/warm/cold classification is real.
+const INTENT_SCORE: Record<"hot" | "warm" | "cold", number> = { hot: 90, warm: 65, cold: 35 };
 
 export const analyzeLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
