@@ -78,7 +78,17 @@ Return ONLY a JSON object (no markdown, no commentary) with exactly these keys:
         model: gateway("google/gemini-3-flash-preview"),
         prompt,
       });
-      return Result.parse(extractJson(text));
+      const result = Result.parse(extractJson(text));
+
+      // Persist the AI-judged score back to the lead (real backend update).
+      if (data.id) {
+        await context.supabase
+          .from("leads")
+          .update({ score: INTENT_SCORE[result.intent] })
+          .eq("id", data.id);
+      }
+
+      return result;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "AI request failed";
       throw new Error(msg);
