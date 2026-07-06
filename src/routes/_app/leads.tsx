@@ -53,7 +53,7 @@ const intentStyles: Record<string, string> = {
   cold: "bg-info/15 text-info-foreground",
 };
 
-function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }) {
+function CoPilotDialog({ lead, onClose, onScored }: { lead: LeadRow; onClose: () => void; onScored: () => void }) {
   const run = useServerFn(analyzeLead);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Analysis | null>(null);
@@ -66,6 +66,7 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
     setErr(null);
     run({
       data: {
+        id: lead.id,
         full_name: lead.full_name,
         email: lead.email,
         phone: lead.phone,
@@ -77,7 +78,10 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
       },
     })
       .then((res) => {
-        if (active) setData(res as Analysis);
+        if (active) {
+          setData(res as Analysis);
+          onScored();
+        }
       })
       .catch((e) => {
         if (active) setErr(e instanceof Error ? e.message : "Something went wrong");
@@ -88,7 +92,8 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
     return () => {
       active = false;
     };
-  }, [lead, run]);
+  }, [lead, run, onScored]);
+
 
   function copyReply() {
     if (!data) return;
