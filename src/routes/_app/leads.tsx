@@ -253,6 +253,7 @@ function Leads() {
                 <th className="px-4 py-3 font-semibold">Name</th>
                 <th className="px-4 py-3 font-semibold">Contact</th>
                 <th className="px-4 py-3 font-semibold">Program</th>
+                <th className="px-4 py-3 font-semibold">Temp</th>
                 <th className="px-4 py-3 font-semibold">Score</th>
                 <th className="px-4 py-3 font-semibold">Received</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
