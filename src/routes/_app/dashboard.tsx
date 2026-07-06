@@ -364,21 +364,69 @@ function QualificationEngine() {
   );
 }
 
-const AGENTS = [
-  { name: "Admissions AI", role: "Qualifies leads & answers common questions", icon: UserCheck, status: "Active" },
-  { name: "Funding AI", role: "Finds the right payment path — never guarantees grants", icon: Wallet, status: "Active" },
-  { name: "Appointment AI", role: "Schedules consultations & sends reminders", icon: CalendarClock, status: "Active" },
-  { name: "Follow-Up AI", role: "Nurtures leads via email & SMS", icon: Bell, status: "Active" },
-  { name: "Recruiting AI", role: "Finds potential CDL students through outreach", icon: Megaphone, status: "Standby" },
-  { name: "Executive AI", role: "Summarizes KPIs, bottlenecks & weekly performance", icon: TrendingUp, status: "Active" },
-];
+function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
+  const { temperature, funnel, revenue } = metrics;
+  const totalLeads = funnel[0]?.value ?? 0;
+  const qualified = funnel[1]?.value ?? 0;
+  const enrolled = funnel.find((f) => f.label === "Enrolled")?.value ?? 0;
+  const hotWarm = temperature.hot + temperature.warm;
 
-function AgentsGrid() {
+  const agents = [
+    {
+      name: "Admissions AI",
+      role: "Qualifies leads & answers common questions",
+      icon: UserCheck,
+      count: totalLeads,
+      unit: "leads handled",
+      live: totalLeads > 0,
+    },
+    {
+      name: "Funding AI",
+      role: "Finds the right payment path — never guarantees grants",
+      icon: Wallet,
+      count: qualified,
+      unit: "financing reviews",
+      live: qualified > 0,
+    },
+    {
+      name: "Appointment AI",
+      role: "Schedules consultations & sends reminders",
+      icon: CalendarClock,
+      count: hotWarm,
+      unit: "prospects to book",
+      live: hotWarm > 0,
+    },
+    {
+      name: "Follow-Up AI",
+      role: "Nurtures leads via email & SMS",
+      icon: Bell,
+      count: temperature.warm + temperature.cold,
+      unit: "nurture queue",
+      live: temperature.warm + temperature.cold > 0,
+    },
+    {
+      name: "Recruiting AI",
+      role: "Finds potential CDL students through outreach",
+      icon: Megaphone,
+      count: temperature.hot,
+      unit: "hot targets",
+      live: temperature.hot > 0,
+    },
+    {
+      name: "Executive AI",
+      role: "Summarizes KPIs, bottlenecks & weekly performance",
+      icon: TrendingUp,
+      count: revenue.pctToGoal,
+      unit: "% to weekly goal",
+      live: true,
+    },
+  ];
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {AGENTS.map((a) => {
+      {agents.map((a) => {
         const Icon = a.icon;
-        const live = a.status === "Active";
+        const live = a.live;
         return (
           <div key={a.name} className="cc-card flex items-start gap-3 rounded-2xl p-5">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -391,10 +439,14 @@ function AgentsGrid() {
                   className={`flex items-center gap-1 text-[10px] font-bold uppercase ${live ? "text-success" : "text-muted-foreground"}`}
                 >
                   <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-success animate-pulse" : "bg-muted-foreground"}`} />
-                  {a.status}
+                  {live ? "Active" : "Idle"}
                 </span>
               </div>
               <p className="mt-1 text-xs leading-snug text-muted-foreground">{a.role}</p>
+              <div className="mt-2 flex items-baseline gap-1.5">
+                <span className="font-display text-lg font-bold text-foreground tabular-nums">{a.count}</span>
+                <span className="text-[11px] text-muted-foreground">{a.unit}</span>
+              </div>
             </div>
           </div>
         );
