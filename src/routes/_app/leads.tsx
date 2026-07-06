@@ -184,12 +184,19 @@ function Leads() {
     else qc.invalidateQueries({ queryKey: ["leads"] });
   }
 
-  const merged = [...(DEMO_LEADS as unknown as LeadRow[]), ...((leads.data ?? []) as LeadRow[])];
-  const rows = merged.filter((l) => {
+  const allLeads = (leads.data ?? []) as LeadRow[];
+  const rows = allLeads.filter((l) => {
     const matchesQ = `${l.full_name} ${l.email} ${l.program ?? ""}`.toLowerCase().includes(q.toLowerCase());
     const matchesF = filter === "all" || l.status === filter;
     return matchesQ && matchesF;
   });
+
+  const activePipeline = allLeads.filter((l) => !["enrolled", "rejected", "lost", "won"].includes(l.status));
+  const tempCounts = {
+    hot: activePipeline.filter((l) => leadTemperature(l.score) === "hot").length,
+    warm: activePipeline.filter((l) => leadTemperature(l.score) === "warm").length,
+    cold: activePipeline.filter((l) => leadTemperature(l.score) === "cold").length,
+  };
 
   return (
     <div>
