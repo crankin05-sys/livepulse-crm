@@ -270,6 +270,100 @@ export function prettySource(s: string | null | undefined): string {
   return map[s] ?? s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+// ---------------------------------------------------------------------------
+// Real agent stats derived from live database rows (no random simulation).
+// ---------------------------------------------------------------------------
+
+export type LiveAgentStat = {
+  key: string;
+  name: string;
+  caption: string;
+  active: boolean;
+  count: number;
+  unit: string;
+};
+
+export function buildAgentStats(leads: Lead[], students: Student[]): LiveAgentStat[] {
+  const today = leads.filter((l) => daysAgo(l.created_at) <= 1).length;
+  const week = leads.filter((l) => daysAgo(l.created_at) <= 7).length;
+  const inOutreach = leads.filter((l) =>
+    ["contacted", "qualified", "application_started"].includes(l.status),
+  ).length;
+  const qualified = leads.filter(
+    (l) => leadTemperature(l.score) !== "cold" && isPipelineLead(l),
+  ).length;
+  const enrolled = students.filter((s) => ["active", "enrolled"].includes(s.status)).length;
+
+  return [
+    {
+      key: "leadgen",
+      name: "Lead-Gen Agent",
+      caption: today > 0 ? "Capturing inbound leads" : `${week} captured this week`,
+      active: leads.length > 0,
+      count: today,
+      unit: "leads today",
+    },
+    {
+      key: "outreach",
+      name: "Outreach Agent",
+      caption: "Following up with prospects",
+      active: inOutreach > 0,
+      count: inOutreach,
+      unit: "in outreach",
+    },
+    {
+      key: "qualifier",
+      name: "Qualifier",
+      caption: "Scoring hot & warm leads",
+      active: qualified > 0,
+      count: qualified,
+      unit: "qualified",
+    },
+    {
+      key: "booking",
+      name: "Enrollment Agent",
+      caption: "Converting to enrollments",
+      active: enrolled > 0,
+      count: enrolled,
+      unit: "enrolled",
+    },
+  ];
+}
+
+// Turn real lead rows into a live activity feed (newest first).
+export type LiveActivity = {
+  id: string;
+  kind: "found" | "outreach" | "qualified" | "enrolled" | "rejected";
+  text: string;
+  ts: number;
+};
+
+export function buildLeadActivity(leads: Lead[], limit = 14): LiveActivity[] {
+  const sorted = [...leads].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+  return sorted.slice(0, limit).map((l) => {
+    const temp = leadTemperature(l.score);
+    const src = prettySource(l.source);
+    let kind: LiveActivity["kind"] = "found";
+    let text = `🤖 New lead — ${l.full_name} via ${src} (score ${l.score ?? 0})`;
+    if (l.status === "enrolled") {
+      kind = "enrolled";
+      text = `🎓 Enrolled — ${l.full_name} converted to a student`;
+    } else if (l.status === "rejected" || l.status === "lost") {
+      kind = "rejected";
+      text = `⚪ Closed out — ${l.full_name} marked not a fit`;
+    } else if (l.status === "qualified" || l.status === "application_started") {
+      kind = "qualified";
+      text = `🎯 Qualified — ${l.full_name} (${temp}, score ${l.score ?? 0})`;
+    } else if (l.status === "contacted") {
+      kind = "outreach";
+      text = `✉️ Outreach — followed up with ${l.full_name} (${src})`;
+    }
+    return { id: l.id, kind, text, ts: new Date(l.created_at).getTime() };
+  });
+}
+
 function hottest(leads: Lead[]): string {
   const sorted = [...leads]
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
