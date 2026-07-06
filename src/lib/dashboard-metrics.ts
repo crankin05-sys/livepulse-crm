@@ -1,7 +1,9 @@
 import type { Lead, Student, Payment, Placement, Vehicle, Carrier } from "./queries";
 
 export const WEEKLY_REVENUE_GOAL = 80000;
-export const AVG_TUITION = 6500;
+// Average training cost per student (school tuition). Drives pipeline income projections.
+export const TUITION = 6500;
+export const AVG_TUITION = TUITION;
 
 function daysAgo(iso: string | null | undefined): number {
   if (!iso) return 9999;
@@ -9,6 +11,29 @@ function daysAgo(iso: string | null | undefined): number {
 }
 
 export type Metric = { label: string; value: string | number; hint?: string };
+
+export type Temperature = "hot" | "warm" | "cold";
+
+// Deterministic classification from the real lead score stored in the database.
+export function leadTemperature(score: number | null | undefined): Temperature {
+  const s = score ?? 0;
+  if (s >= 75) return "hot";
+  if (s >= 50) return "warm";
+  return "cold";
+}
+
+// Probability a lead of each temperature actually enrolls (used for income projection).
+export const CLOSE_PROBABILITY: Record<Temperature, number> = {
+  hot: 0.6,
+  warm: 0.3,
+  cold: 0.1,
+};
+
+// Leads that have already left the funnel (won or lost) are not "in the pipeline".
+const CLOSED_STATUSES = ["enrolled", "won", "rejected", "lost"];
+export function isPipelineLead(l: Pick<Lead, "status">): boolean {
+  return !CLOSED_STATUSES.includes(l.status);
+}
 
 export type DashboardMetrics = {
   revenue: {
@@ -20,6 +45,14 @@ export type DashboardMetrics = {
     pctToGoal: number;
     cards: Metric[];
   };
+  pipelineIncome: {
+    tuition: number;
+    projected: number;
+    potential: number;
+    activeLeads: number;
+    cards: Metric[];
+  };
+  temperature: { hot: number; warm: number; cold: number };
   pipeline: Metric[];
   kpi: Metric[];
   executive: Metric[];
@@ -27,8 +60,7 @@ export type DashboardMetrics = {
   contextSummary: string;
 };
 
-const usd = (n: number) =>
-  `$${Math.round(n).toLocaleString("en-US")}`;
+const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 
 export function buildMetrics(d: {
   leads: Lead[];
@@ -40,7 +72,7 @@ export function buildMetrics(d: {
 }): DashboardMetrics {
   const { leads, students, payments, placements } = d;
 
-  // ---- Revenue ----
+  // ---- Revenue (collected / booked from real payments) ----
   const collected = payments
     .filter((p) => p.status === "paid")
     .reduce((s, p) => s + Number(p.amount ?? 0), 0);
@@ -51,21 +83,36 @@ export function buildMetrics(d: {
     ["active", "enrolled"].includes(s.status),
   ).length;
   const booked = collected + pending;
-  const projected = Math.round(collected + pending * 0.85);
   const remaining = Math.max(WEEKLY_REVENUE_GOAL - collected, 0);
   const pctToGoal = Math.min(100, Math.round((collected / WEEKLY_REVENUE_GOAL) * 100));
+
+  // ---- Lead temperature (cold / warm / hot) from real scores ----
+  const pipelineLeads = leads.filter(isPipelineLead);
+  const hot = pipelineLeads.filter((l) => leadTemperature(l.score) === "hot").length;
+  const warm = pipelineLeads.filter((l) => leadTemperature(l.score) === "warm").length;
+  const cold = pipelineLeads.filter((l) => leadTemperature(l.score) === "cold").length;
+
+  // ---- Projected income from the live pipeline (tuition x close probability) ----
+  const projectedPipelineIncome = pipelineLeads.reduce(
+    (s, l) => s + TUITION * CLOSE_PROBABILITY[leadTemperature(l.score)],
+    0,
+  );
+  const pipelinePotential = pipelineLeads.length * TUITION;
+
+  // Overall projected revenue blends collected + likely-to-close pipeline.
+  const projected = Math.round(collected + pending * 0.85 + projectedPipelineIncome);
 
   // ---- Lead segmentation ----
   const score = (l: Lead) => l.score ?? 0;
   const newLeads = leads.filter((l) => l.status === "new").length;
   const qualified = leads.filter(
-    (l) => l.status === "qualified" || score(l) >= 70,
+    (l) => l.status === "qualified" || l.status === "application_started" || score(l) >= 75,
   ).length;
   const apptScheduled = leads.filter(
     (l) => l.source?.includes("booking") || score(l) >= 85,
   ).length;
   const apptCompleted = Math.round(apptScheduled * 0.7);
-  const lost = leads.filter((l) => l.status === "lost").length;
+  const lost = leads.filter((l) => l.status === "lost" || l.status === "rejected").length;
   const followUps = leads.filter(
     (l) => l.status === "contacted" || (l.status === "new" && daysAgo(l.created_at) > 1),
   ).length;
@@ -80,20 +127,31 @@ export function buildMetrics(d: {
   ).length;
 
   const conversion =
-    leads.length > 0
-      ? Math.round((enrolledStudents / leads.length) * 100)
-      : 0;
-  const studentsNeeded = Math.max(
-    Math.ceil(remaining / AVG_TUITION),
-    0,
-  );
+    leads.length > 0 ? Math.round((enrolledStudents / leads.length) * 100) : 0;
+  const studentsNeeded = Math.max(Math.ceil(remaining / TUITION), 0);
 
   const revenueCards: Metric[] = [
     { label: "Weekly Revenue Goal", value: usd(WEEKLY_REVENUE_GOAL) },
     { label: "Revenue Booked", value: usd(booked), hint: "Signed + scheduled" },
     { label: "Revenue Collected", value: usd(collected), hint: `${pctToGoal}% of goal` },
     { label: "Revenue Remaining", value: usd(remaining), hint: `${studentsNeeded} enrollments to goal` },
-    { label: "Projected Weekly Revenue", value: usd(projected), hint: "85% close on booked" },
+    { label: "Projected Weekly Revenue", value: usd(projected), hint: "Collected + likely pipeline" },
+  ];
+
+  const pipelineIncomeCards: Metric[] = [
+    {
+      label: "Projected Pipeline Income",
+      value: usd(projectedPipelineIncome),
+      hint: `${pipelineLeads.length} active leads`,
+    },
+    {
+      label: "Full Pipeline Value",
+      value: usd(pipelinePotential),
+      hint: `if all close @ ${usd(TUITION)}`,
+    },
+    { label: "🔥 Hot Leads", value: hot, hint: `~${usd(hot * TUITION * CLOSE_PROBABILITY.hot)} projected` },
+    { label: "🌤 Warm Leads", value: warm, hint: `~${usd(warm * TUITION * CLOSE_PROBABILITY.warm)} projected` },
+    { label: "❄️ Cold Leads", value: cold, hint: `~${usd(cold * TUITION * CLOSE_PROBABILITY.cold)} projected` },
   ];
 
   const pipeline: Metric[] = [
@@ -154,8 +212,9 @@ export function buildMetrics(d: {
   ];
 
   const contextSummary = [
-    `Weekly revenue goal: ${usd(WEEKLY_REVENUE_GOAL)}.`,
+    `Weekly revenue goal: ${usd(WEEKLY_REVENUE_GOAL)}. Tuition per student: ${usd(TUITION)}.`,
     `Collected: ${usd(collected)} (${pctToGoal}% of goal). Booked: ${usd(booked)}. Remaining: ${usd(remaining)}. Projected: ${usd(projected)}.`,
+    `Live pipeline: ${pipelineLeads.length} active leads — ${hot} hot, ${warm} warm, ${cold} cold. Projected pipeline income ${usd(projectedPipelineIncome)} (full value ${usd(pipelinePotential)}).`,
     `Students needed to hit goal: ${studentsNeeded}.`,
     `Leads — total ${leads.length}, today ${leadsToday}, this week ${leadsWeek}, new ${newLeads}, qualified ${qualified}, lost ${lost}.`,
     `Appointments — scheduled ${apptScheduled}, completed ${apptCompleted}, no-shows ${noShows}.`,
@@ -166,6 +225,14 @@ export function buildMetrics(d: {
 
   return {
     revenue: { goal: WEEKLY_REVENUE_GOAL, booked, collected, remaining, projected, pctToGoal, cards: revenueCards },
+    pipelineIncome: {
+      tuition: TUITION,
+      projected: projectedPipelineIncome,
+      potential: pipelinePotential,
+      activeLeads: pipelineLeads.length,
+      cards: pipelineIncomeCards,
+    },
+    temperature: { hot, warm, cold },
     pipeline,
     kpi,
     executive,
@@ -208,7 +275,5 @@ function hottest(leads: Lead[]): string {
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
     .slice(0, 2);
   if (sorted.length === 0) return "none yet";
-  return sorted
-    .map((l) => `${l.full_name} at ${l.score ?? 0}%`)
-    .join(", ");
+  return sorted.map((l) => `${l.full_name} at ${l.score ?? 0}%`).join(", ");
 }
