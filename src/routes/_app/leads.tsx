@@ -6,7 +6,7 @@ import { Search, Sparkle, Loader2, Copy, Check, Flame } from "lucide-react";
 import { leadsQuery } from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
 import { analyzeLead } from "../../lib/crm-ai.functions";
-import { DEMO_LEADS } from "../../lib/lead-gen-demo";
+import { leadTemperature, type Temperature } from "../../lib/dashboard-metrics";
 import { AgentStatusCards } from "../../components/crm/AgentStatusCards";
 import { LeadActivityFeed } from "../../components/crm/LeadActivityFeed";
 import { PageHeader } from "../../components/crm/Primitives";
