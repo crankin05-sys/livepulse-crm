@@ -1,27 +1,20 @@
-import { useEffect, useState } from "react";
-import { Bot, Send, Target, CalendarClock } from "lucide-react";
-import { AGENTS, type AgentStat } from "../../lib/lead-gen-demo";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bot, Send, Target, GraduationCap } from "lucide-react";
+import { leadsQuery, studentsQuery } from "../../lib/queries";
+import { buildAgentStats, type LiveAgentStat } from "../../lib/dashboard-metrics";
+import { supabase } from "../../integrations/supabase/client";
 
 const ICONS: Record<string, typeof Bot> = {
   leadgen: Bot,
   outreach: Send,
   qualifier: Target,
-  booking: CalendarClock,
+  booking: GraduationCap,
 };
 
-function AgentCard({ agent }: { agent: AgentStat }) {
+function AgentCard({ agent }: { agent: LiveAgentStat }) {
   const Icon = ICONS[agent.key] ?? Bot;
-  const live = agent.status === "Active";
-  const [count, setCount] = useState(agent.base);
-
-  useEffect(() => {
-    if (!live || agent.tickMax === 0) return;
-    const id = setInterval(
-      () => setCount((c) => c + Math.floor(Math.random() * (agent.tickMax + 1))),
-      3500 + Math.random() * 2500,
-    );
-    return () => clearInterval(id);
-  }, [live, agent.tickMax]);
+  const live = agent.active;
 
   return (
     <div className={`dark rounded-2xl p-5 text-foreground ${live ? "cc-card-glow" : "cc-card"}`}>
@@ -35,7 +28,7 @@ function AgentCard({ agent }: { agent: AgentStat }) {
         </span>
         <span
           className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${
-            live ? "text-success" : "text-warning"
+            live ? "text-success" : "text-muted-foreground"
           }`}
         >
           <span className="relative flex h-2 w-2">
@@ -43,30 +36,47 @@ function AgentCard({ agent }: { agent: AgentStat }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
             )}
             <span
-              className={`relative inline-flex h-2 w-2 rounded-full ${live ? "bg-success" : "bg-warning"}`}
+              className={`relative inline-flex h-2 w-2 rounded-full ${live ? "bg-success" : "bg-muted-foreground"}`}
             />
           </span>
-          {agent.status}
+          {live ? "Active" : "Idle"}
         </span>
       </div>
       <div className="mt-3 font-display text-sm font-bold text-foreground">{agent.name}</div>
       <p className="mt-0.5 text-xs text-muted-foreground">{agent.caption}</p>
-      {agent.base > 0 ? (
-        <div className="mt-3 flex items-baseline gap-1.5">
-          <span className="font-display text-2xl font-bold text-foreground tabular-nums">{count}</span>
-          <span className="text-xs text-muted-foreground">{agent.unit}</span>
-        </div>
-      ) : (
-        <div className="mt-3 text-xs font-medium text-muted-foreground">Awaiting handoff</div>
-      )}
+      <div className="mt-3 flex items-baseline gap-1.5">
+        <span className="font-display text-2xl font-bold text-foreground tabular-nums">{agent.count}</span>
+        <span className="text-xs text-muted-foreground">{agent.unit}</span>
+      </div>
     </div>
   );
 }
 
 export function AgentStatusCards() {
+  const leads = useQuery(leadsQuery);
+  const students = useQuery(studentsQuery);
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("agent-cards-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        qc.invalidateQueries({ queryKey: ["leads"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "students" }, () => {
+        qc.invalidateQueries({ queryKey: ["students"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qc]);
+
+  const agents = buildAgentStats(leads.data ?? [], students.data ?? []);
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {AGENTS.map((a) => (
+      {agents.map((a) => (
         <AgentCard key={a.key} agent={a} />
       ))}
     </div>
