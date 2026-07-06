@@ -1,36 +1,36 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Activity } from "lucide-react";
-import { makeActivity, relTime, seedActivity, type ActivityEntry } from "../../lib/lead-gen-demo";
-
-const MAX = 14;
+import { leadsQuery } from "../../lib/queries";
+import { buildLeadActivity } from "../../lib/dashboard-metrics";
+import { supabase } from "../../integrations/supabase/client";
+import { relativeTime } from "../../lib/format";
 
 export function LeadActivityFeed() {
-  const [entries, setEntries] = useState<ActivityEntry[]>([]);
+  const leads = useQuery(leadsQuery);
+  const qc = useQueryClient();
   const [, force] = useState(0);
-  const newestId = useRef<string | null>(null);
 
-  // Seed + schedule new entries every 4-6s (client only, avoids SSR mismatch).
   useEffect(() => {
-    setEntries(seedActivity(5));
-    let timer: ReturnType<typeof setTimeout>;
-    const loop = () => {
-      const delay = 4000 + Math.random() * 2000;
-      timer = setTimeout(() => {
-        const e = makeActivity();
-        newestId.current = e.id;
-        setEntries((prev) => [e, ...prev].slice(0, MAX));
-        loop();
-      }, delay);
+    const channel = supabase
+      .channel("activity-feed-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        qc.invalidateQueries({ queryKey: ["leads"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
     };
-    loop();
-    return () => clearTimeout(timer);
-  }, []);
+  }, [qc]);
 
-  // Re-render every second so relative timestamps age.
+  // Re-render every 30s so relative timestamps stay fresh.
   useEffect(() => {
-    const id = setInterval(() => force((n) => n + 1), 1000);
+    const id = setInterval(() => force((n) => n + 1), 30000);
     return () => clearInterval(id);
   }, []);
+
+  const entries = buildLeadActivity(leads.data ?? []);
+  const live = entries.length > 0;
 
   return (
     <div className="dark cc-card flex h-full flex-col rounded-2xl p-5 text-foreground">
@@ -39,14 +39,22 @@ export function LeadActivityFeed() {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/15 text-success">
             <Activity className="h-4 w-4" />
           </span>
-          <h3 className="font-display text-sm font-bold">Lead Agent · Live Activity</h3>
+          <h3 className="font-display text-sm font-bold">Live Lead Activity</h3>
         </div>
-        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-success">
+        <span
+          className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${
+            live ? "text-success" : "text-muted-foreground"
+          }`}
+        >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+            {live && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+            )}
+            <span
+              className={`relative inline-flex h-2 w-2 rounded-full ${live ? "bg-success" : "bg-muted-foreground"}`}
+            />
           </span>
-          Live
+          {live ? "Live" : "Idle"}
         </span>
       </div>
 
@@ -54,16 +62,19 @@ export function LeadActivityFeed() {
         {entries.map((e) => (
           <li
             key={e.id}
-            className={`flex items-start justify-between gap-3 rounded-lg px-3 py-2 text-xs transition-colors ${
-              e.id === newestId.current ? "bg-success/10" : "bg-white/[0.02]"
-            }`}
+            className="flex items-start justify-between gap-3 rounded-lg bg-white/[0.02] px-3 py-2 text-xs"
           >
             <span className="leading-snug text-foreground/90">{e.text}</span>
             <span className="shrink-0 whitespace-nowrap text-[10px] font-medium text-muted-foreground">
-              {relTime(e.ts)}
+              {relativeTime(new Date(e.ts).toISOString())}
             </span>
           </li>
         ))}
+        {entries.length === 0 && (
+          <li className="px-3 py-6 text-center text-xs text-muted-foreground">
+            No lead activity yet — new inbound leads will appear here in real time.
+          </li>
+        )}
       </ul>
     </div>
   );
