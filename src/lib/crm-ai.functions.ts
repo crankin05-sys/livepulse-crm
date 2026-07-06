@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const LeadInput = z.object({
+  id: z.string().uuid().optional(),
   full_name: z.string(),
   email: z.string(),
   phone: z.string().nullable().optional(),
@@ -12,6 +13,9 @@ const LeadInput = z.object({
   score: z.number(),
   source: z.string(),
 });
+
+// AI-judged intent -> persisted lead score, so the hot/warm/cold classification is real.
+const INTENT_SCORE: Record<"hot" | "warm" | "cold", number> = { hot: 90, warm: 65, cold: 35 };
 
 export const analyzeLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -74,7 +78,17 @@ Return ONLY a JSON object (no markdown, no commentary) with exactly these keys:
         model: gateway("google/gemini-3-flash-preview"),
         prompt,
       });
-      return Result.parse(extractJson(text));
+      const result = Result.parse(extractJson(text));
+
+      // Persist the AI-judged score back to the lead (real backend update).
+      if (data.id) {
+        await context.supabase
+          .from("leads")
+          .update({ score: INTENT_SCORE[result.intent] })
+          .eq("id", data.id);
+      }
+
+      return result;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "AI request failed";
       throw new Error(msg);

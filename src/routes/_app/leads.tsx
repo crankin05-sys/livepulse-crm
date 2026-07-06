@@ -6,7 +6,7 @@ import { Search, Sparkle, Loader2, Copy, Check, Flame } from "lucide-react";
 import { leadsQuery } from "../../lib/queries";
 import { supabase } from "../../integrations/supabase/client";
 import { analyzeLead } from "../../lib/crm-ai.functions";
-import { DEMO_LEADS } from "../../lib/lead-gen-demo";
+import { leadTemperature, type Temperature } from "../../lib/dashboard-metrics";
 import { AgentStatusCards } from "../../components/crm/AgentStatusCards";
 import { LeadActivityFeed } from "../../components/crm/LeadActivityFeed";
 import { PageHeader } from "../../components/crm/Primitives";
@@ -19,7 +19,13 @@ export const Route = createFileRoute("/_app/leads")({
   component: Leads,
 });
 
-const statuses = ["new", "contacted", "qualified", "enrolled", "lost"];
+const statuses = ["new", "contacted", "qualified", "application_started", "enrolled", "rejected"];
+
+const tempStyles: Record<Temperature, string> = {
+  hot: "bg-destructive/15 text-destructive",
+  warm: "bg-warning/20 text-warning-foreground",
+  cold: "bg-info/15 text-info-foreground",
+};
 
 type LeadRow = {
   id: string;
@@ -47,7 +53,7 @@ const intentStyles: Record<string, string> = {
   cold: "bg-info/15 text-info-foreground",
 };
 
-function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }) {
+function CoPilotDialog({ lead, onClose, onScored }: { lead: LeadRow; onClose: () => void; onScored: () => void }) {
   const run = useServerFn(analyzeLead);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Analysis | null>(null);
@@ -60,6 +66,7 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
     setErr(null);
     run({
       data: {
+        id: lead.id,
         full_name: lead.full_name,
         email: lead.email,
         phone: lead.phone,
@@ -71,7 +78,10 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
       },
     })
       .then((res) => {
-        if (active) setData(res as Analysis);
+        if (active) {
+          setData(res as Analysis);
+          onScored();
+        }
       })
       .catch((e) => {
         if (active) setErr(e instanceof Error ? e.message : "Something went wrong");
@@ -82,7 +92,8 @@ function CoPilotDialog({ lead, onClose }: { lead: LeadRow; onClose: () => void }
     return () => {
       active = false;
     };
-  }, [lead, run]);
+  }, [lead, run, onScored]);
+
 
   function copyReply() {
     if (!data) return;
@@ -178,16 +189,42 @@ function Leads() {
     else qc.invalidateQueries({ queryKey: ["leads"] });
   }
 
-  const merged = [...(DEMO_LEADS as unknown as LeadRow[]), ...((leads.data ?? []) as LeadRow[])];
-  const rows = merged.filter((l) => {
+  const allLeads = (leads.data ?? []) as LeadRow[];
+  const rows = allLeads.filter((l) => {
     const matchesQ = `${l.full_name} ${l.email} ${l.program ?? ""}`.toLowerCase().includes(q.toLowerCase());
     const matchesF = filter === "all" || l.status === filter;
     return matchesQ && matchesF;
   });
 
+  const activePipeline = allLeads.filter((l) => !["enrolled", "rejected", "lost", "won"].includes(l.status));
+  const tempCounts = {
+    hot: activePipeline.filter((l) => leadTemperature(l.score) === "hot").length,
+    warm: activePipeline.filter((l) => leadTemperature(l.score) === "warm").length,
+    cold: activePipeline.filter((l) => leadTemperature(l.score) === "cold").length,
+  };
+
   return (
     <div>
       <PageHeader title="Leads" subtitle="Inbound applications from the website & AI assistant, updated in real time." />
+
+      <div className="mb-6 grid gap-3 sm:grid-cols-4">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">In Pipeline</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{activePipeline.length}</div>
+        </div>
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-destructive">🔥 Hot</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.hot}</div>
+        </div>
+        <div className="rounded-2xl border border-warning/30 bg-warning/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-warning-foreground">🌤 Warm</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.warm}</div>
+        </div>
+        <div className="rounded-2xl border border-info/30 bg-info/5 p-4 shadow-card">
+          <div className="text-xs font-medium uppercase tracking-wide text-info-foreground">❄️ Cold</div>
+          <div className="mt-1 font-display text-2xl font-bold text-foreground">{tempCounts.cold}</div>
+        </div>
+      </div>
 
       <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_minmax(320px,420px)]">
         <div className="space-y-4">
@@ -221,6 +258,7 @@ function Leads() {
                 <th className="px-4 py-3 font-semibold">Name</th>
                 <th className="px-4 py-3 font-semibold">Contact</th>
                 <th className="px-4 py-3 font-semibold">Program</th>
+                <th className="px-4 py-3 font-semibold">Temp</th>
                 <th className="px-4 py-3 font-semibold">Score</th>
                 <th className="px-4 py-3 font-semibold">Received</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
@@ -236,6 +274,17 @@ function Leads() {
                     {l.phone && <div className="text-xs">{l.phone}</div>}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{l.program ?? "—"}</td>
+                  <td className="px-4 py-3">
+                    {(() => {
+                      const t = leadTemperature(l.score);
+                      const emoji = t === "hot" ? "🔥" : t === "warm" ? "🌤" : "❄️";
+                      return (
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${tempStyles[t]}`}>
+                          {emoji} {t}
+                        </span>
+                      );
+                    })()}
+                  </td>
                   <td className="px-4 py-3">
                     <span className="font-semibold text-foreground">{l.score}</span>
                   </td>
@@ -257,14 +306,20 @@ function Leads() {
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">No leads match your filters.</td></tr>
+                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted-foreground">No leads match your filters.</td></tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {active && <CoPilotDialog lead={active} onClose={() => setActive(null)} />}
+      {active && (
+        <CoPilotDialog
+          lead={active}
+          onClose={() => setActive(null)}
+          onScored={() => qc.invalidateQueries({ queryKey: ["leads"] })}
+        />
+      )}
     </div>
   );
 }

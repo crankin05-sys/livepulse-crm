@@ -83,6 +83,19 @@ function Dashboard() {
         </div>
       </Section>
 
+      <Section title="Projected Income (Live Pipeline)" icon={TrendingUp} accent="success">
+        <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+          Projected income is calculated from real leads currently in the pipeline —
+          tuition of ${metrics.pipelineIncome.tuition.toLocaleString()} per student weighted by each
+          lead&apos;s close probability (hot 60% · warm 30% · cold 10%).
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {metrics.pipelineIncome.cards.map((m, i) => (
+            <BigMetric key={m.label} m={m} highlight={i === 0} />
+          ))}
+        </div>
+      </Section>
+
       <Section title="Lead Pipeline" icon={Activity} accent="info">
         <PipelineFunnel funnel={metrics.funnel} />
         <ColorLegend />
