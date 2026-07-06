@@ -301,7 +301,7 @@ function Leads() {
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">No leads match your filters.</td></tr>
+                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted-foreground">No leads match your filters.</td></tr>
               )}
             </tbody>
           </table>
