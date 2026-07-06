@@ -313,7 +313,13 @@ function Leads() {
         </div>
       </div>
 
-      {active && <CoPilotDialog lead={active} onClose={() => setActive(null)} />}
+      {active && (
+        <CoPilotDialog
+          lead={active}
+          onClose={() => setActive(null)}
+          onScored={() => qc.invalidateQueries({ queryKey: ["leads"] })}
+        />
+      )}
     </div>
   );
 }
