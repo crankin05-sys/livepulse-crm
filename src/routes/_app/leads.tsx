@@ -270,6 +270,17 @@ function Leads() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{l.program ?? "—"}</td>
                   <td className="px-4 py-3">
+                    {(() => {
+                      const t = leadTemperature(l.score);
+                      const emoji = t === "hot" ? "🔥" : t === "warm" ? "🌤" : "❄️";
+                      return (
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${tempStyles[t]}`}>
+                          {emoji} {t}
+                        </span>
+                      );
+                    })()}
+                  </td>
+                  <td className="px-4 py-3">
                     <span className="font-semibold text-foreground">{l.score}</span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{relativeTime(l.created_at)}</td>
