@@ -19,7 +19,13 @@ export const Route = createFileRoute("/_app/leads")({
   component: Leads,
 });
 
-const statuses = ["new", "contacted", "qualified", "enrolled", "lost"];
+const statuses = ["new", "contacted", "qualified", "application_started", "enrolled", "rejected"];
+
+const tempStyles: Record<Temperature, string> = {
+  hot: "bg-destructive/15 text-destructive",
+  warm: "bg-warning/20 text-warning-foreground",
+  cold: "bg-info/15 text-info-foreground",
+};
 
 type LeadRow = {
   id: string;
