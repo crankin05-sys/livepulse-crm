@@ -238,38 +238,67 @@ export function AuraExecutive({ context }: { context: string }) {
         </div>
 
         {/* conversation */}
-        <div className="relative mt-4 max-h-64 space-y-3 overflow-y-auto pr-1">
+        <div className="relative mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
           {messages.length === 0 ? (
-            <div className="rounded-2xl rounded-tl-sm bg-white/5 px-4 py-3 text-sm text-white/85">
-              Good to see you, Tyler. Ask me anything — I'll read the numbers and tell you
-              the single move that matters most. Tap a prompt or hit the mic.
+            <div className="rounded-2xl rounded-tl-sm border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/85">
+              Good to see you, Tyler. I read the live database on every question —
+              revenue, paperwork gaps, hot leads, campaigns. Ask me what to do next,
+              or tell me to pause a campaign.
             </div>
           ) : (
             messages.map((m) => {
-              const text = textOf(m.parts as { type: string; text?: string }[]);
-              if (!text) return null;
+              const parts = m.parts as ToolPart[];
+              const text = textOf(parts as { type: string; text?: string }[]);
               const mine = m.role === "user";
+              const toolParts = parts.filter((p) => p.type?.startsWith("tool-"));
               return (
-                <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm ${
-                      mine
-                        ? "rounded-br-sm bg-[oklch(0.79_0.16_66)] text-[oklch(0.27_0.05_70)]"
-                        : "rounded-tl-sm bg-white/8 text-white/90"
-                    }`}
-                  >
-                    {text}
-                  </div>
+                <div key={m.id} className="space-y-1.5">
+                  {!mine &&
+                    toolParts.map((tp, i) => {
+                      const running = tp.state === "input-streaming" || tp.state === "input-available" || tp.state === "call";
+                      return (
+                        <div
+                          key={i}
+                          className="flex items-center gap-2 rounded-lg border border-[oklch(0.79_0.16_66)]/25 bg-[oklch(0.79_0.16_66)]/10 px-3 py-1.5 text-[11px] text-[oklch(0.85_0.14_70)]"
+                        >
+                          {running ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <span className="h-1.5 w-1.5 rounded-full bg-[oklch(0.79_0.16_66)]" />
+                          )}
+                          <span className="font-semibold uppercase tracking-wide">
+                            {TOOL_LABEL(tp.toolName)}
+                          </span>
+                          <span className="text-white/40">
+                            {running ? "…" : "· done"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  {text && (
+                    <div className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+                      <div
+                        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                          mine
+                            ? "rounded-br-sm bg-[oklch(0.79_0.16_66)] text-[oklch(0.27_0.05_70)]"
+                            : "rounded-tl-sm border border-white/10 bg-white/[0.06] text-white/95"
+                        }`}
+                      >
+                        {text}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })
           )}
           {status === "submitted" && (
             <div className="flex items-center gap-2 text-xs text-white/60">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Aura is analyzing…
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Aura is reading the database…
             </div>
           )}
         </div>
+
 
         {messages.length === 0 && (
           <div className="relative mt-3 flex flex-wrap gap-2">
