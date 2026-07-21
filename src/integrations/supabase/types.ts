@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          audience_size: number
+          budget: number
+          channel: string
+          created_at: string
+          id: string
+          leads_generated: number
+          name: string
+          notes: string | null
+          spend: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          audience_size?: number
+          budget?: number
+          channel: string
+          created_at?: string
+          id?: string
+          leads_generated?: number
+          name: string
+          notes?: string | null
+          spend?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          audience_size?: number
+          budget?: number
+          channel?: string
+          created_at?: string
+          id?: string
+          leads_generated?: number
+          name?: string
+          notes?: string | null
+          spend?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       carriers: {
         Row: {
           avg_salary: number | null
