@@ -15,11 +15,31 @@ import { Button } from "../ui/button";
 import { streamSpeech, type SpeechController } from "../../lib/speak";
 
 const SUGGESTIONS = [
-  "What should I do next?",
-  "How do I get more students enrolled?",
-  "Am I on track to hit my KPIs this week?",
-  "Where's the bottleneck in my pipeline?",
+  "Give me my briefing",
+  "Who's missing paperwork?",
+  "Which lead should I call right now?",
+  "Pause the SMS reactivation campaign",
 ];
+
+type ToolPart = {
+  type: string;
+  toolName?: string;
+  state?: string;
+  input?: unknown;
+  output?: unknown;
+};
+
+function TOOL_LABEL(name?: string): string {
+  const map: Record<string, string> = {
+    get_executive_brief: "Reading live KPIs",
+    list_missing_paperwork: "Auditing student paperwork",
+    list_campaigns: "Pulling campaign performance",
+    pause_campaign: "Pausing campaign",
+    launch_campaign: "Launching campaign",
+    list_hot_leads: "Ranking hottest leads",
+  };
+  return name ? (map[name] ?? name.replace(/_/g, " ")) : "Working";
+}
 
 type SpeechRecognitionLike = {
   lang: string;
