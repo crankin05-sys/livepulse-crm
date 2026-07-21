@@ -76,9 +76,12 @@ export const updateAppointmentStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => UpdateInput.parse(data))
   .handler(async ({ data, context }) => {
-    const patch: Record<string, string | null> = { status: data.status };
-    if (data.status === "confirmed") patch.confirmed_at = new Date().toISOString();
-    if (data.status === "completed") patch.completed_at = new Date().toISOString();
+    const now = new Date().toISOString();
+    const patch = {
+      status: data.status,
+      confirmed_at: data.status === "confirmed" ? now : null,
+      completed_at: data.status === "completed" ? now : null,
+    };
     const { error } = await context.supabase
       .from("appointments")
       .update(patch)
