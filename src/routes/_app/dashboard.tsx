@@ -388,6 +388,7 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
       count: qualified,
       unit: "financing reviews",
       live: qualified > 0,
+      href: "/agents/funding" as const,
     },
     {
       name: "Appointment AI",
