@@ -279,8 +279,6 @@
   color: inherit;
   outline: none;
   transition: border-color 120ms, box-shadow 120ms;
-}
-@utility cc-input {
   &:focus {
     border-color: oklch(0.79 0.16 66 / 0.6);
     box-shadow: 0 0 0 3px oklch(0.79 0.16 66 / 0.15);
