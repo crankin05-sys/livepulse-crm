@@ -51,7 +51,7 @@ const aiAgents = [
   { name: "Funding AI", icon: Wallet, status: "Active" },
   { name: "Appointment AI", icon: CalendarClock, status: "Active" },
   { name: "Follow-Up AI", icon: Bell, status: "Active" },
-  { name: "Recruiting AI", icon: Megaphone, status: "Standby" },
+  { name: "Recruiting AI", icon: Megaphone, status: "Active" },
   { name: "Executive AI", icon: TrendingUp, status: "Active" },
 ] as const;
 
