@@ -127,11 +127,9 @@ function AuthLayout() {
           </div>
           {aiAgents.map((agent) => {
             const live = agent.status === "Active";
-            return (
-              <div
-                key={agent.name}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70"
-              >
+            const href = agent.name === "Admissions AI" ? "/agents/admissions" : null;
+            const inner = (
+              <>
                 <agent.icon className="h-4.5 w-4.5 shrink-0" />
                 <span className="flex-1 truncate">{agent.name}</span>
                 <span
@@ -140,6 +138,23 @@ function AuthLayout() {
                   }`}
                   title={agent.status}
                 />
+              </>
+            );
+            return href ? (
+              <Link
+                key={agent.name}
+                to={href}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+              >
+                {inner}
+              </Link>
+            ) : (
+              <div
+                key={agent.name}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70"
+              >
+                {inner}
               </div>
             );
           })}
