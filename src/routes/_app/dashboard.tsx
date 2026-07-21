@@ -379,6 +379,7 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
       count: totalLeads,
       unit: "leads handled",
       live: totalLeads > 0,
+      href: "/agents/admissions" as const,
     },
     {
       name: "Funding AI",
