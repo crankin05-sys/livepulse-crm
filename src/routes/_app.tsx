@@ -51,7 +51,7 @@ const aiAgents = [
   { name: "Funding AI", icon: Wallet, status: "Active" },
   { name: "Appointment AI", icon: CalendarClock, status: "Active" },
   { name: "Follow-Up AI", icon: Bell, status: "Active" },
-  { name: "Recruiting AI", icon: Megaphone, status: "Standby" },
+  { name: "Recruiting AI", icon: Megaphone, status: "Active" },
   { name: "Executive AI", icon: TrendingUp, status: "Active" },
 ] as const;
 
@@ -134,9 +134,13 @@ function AuthLayout() {
                   ? "/agents/funding"
                   : agent.name === "Appointment AI"
                     ? "/agents/appointment"
-                    : agent.name === "Executive AI"
-                      ? "/agents/executive"
-                      : null;
+                    : agent.name === "Follow-Up AI"
+                      ? "/agents/follow-up"
+                      : agent.name === "Recruiting AI"
+                        ? "/agents/recruiting"
+                        : agent.name === "Executive AI"
+                          ? "/agents/executive"
+                          : null;
             const inner = (
               <>
                 <agent.icon className="h-4.5 w-4.5 shrink-0" />

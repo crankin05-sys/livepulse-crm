@@ -25,7 +25,9 @@ import { Route as AppLeadsRouteImport } from './routes/_app/leads'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
+import { Route as AppAgentsRecruitingRouteImport } from './routes/_app/agents.recruiting'
 import { Route as AppAgentsFundingRouteImport } from './routes/_app/agents.funding'
+import { Route as AppAgentsFollowUpRouteImport } from './routes/_app/agents.follow-up'
 import { Route as AppAgentsExecutiveRouteImport } from './routes/_app/agents.executive'
 import { Route as AppAgentsAppointmentRouteImport } from './routes/_app/agents.appointment'
 import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.admissions'
@@ -109,9 +111,19 @@ const AppCarriersRoute = AppCarriersRouteImport.update({
   path: '/carriers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgentsRecruitingRoute = AppAgentsRecruitingRouteImport.update({
+  id: '/agents/recruiting',
+  path: '/agents/recruiting',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAgentsFundingRoute = AppAgentsFundingRouteImport.update({
   id: '/agents/funding',
   path: '/agents/funding',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsFollowUpRoute = AppAgentsFollowUpRouteImport.update({
+  id: '/agents/follow-up',
+  path: '/agents/follow-up',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAgentsExecutiveRoute = AppAgentsExecutiveRouteImport.update({
@@ -149,7 +161,9 @@ export interface FileRoutesByFullPath {
   '/agents/admissions': typeof AppAgentsAdmissionsRoute
   '/agents/appointment': typeof AppAgentsAppointmentRoute
   '/agents/executive': typeof AppAgentsExecutiveRoute
+  '/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/agents/funding': typeof AppAgentsFundingRoute
+  '/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -170,7 +184,9 @@ export interface FileRoutesByTo {
   '/agents/admissions': typeof AppAgentsAdmissionsRoute
   '/agents/appointment': typeof AppAgentsAppointmentRoute
   '/agents/executive': typeof AppAgentsExecutiveRoute
+  '/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/agents/funding': typeof AppAgentsFundingRoute
+  '/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,7 +209,9 @@ export interface FileRoutesById {
   '/_app/agents/admissions': typeof AppAgentsAdmissionsRoute
   '/_app/agents/appointment': typeof AppAgentsAppointmentRoute
   '/_app/agents/executive': typeof AppAgentsExecutiveRoute
+  '/_app/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/_app/agents/funding': typeof AppAgentsFundingRoute
+  '/_app/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -216,7 +234,9 @@ export interface FileRouteTypes {
     | '/agents/admissions'
     | '/agents/appointment'
     | '/agents/executive'
+    | '/agents/follow-up'
     | '/agents/funding'
+    | '/agents/recruiting'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -237,7 +257,9 @@ export interface FileRouteTypes {
     | '/agents/admissions'
     | '/agents/appointment'
     | '/agents/executive'
+    | '/agents/follow-up'
     | '/agents/funding'
+    | '/agents/recruiting'
   id:
     | '__root__'
     | '/'
@@ -259,7 +281,9 @@ export interface FileRouteTypes {
     | '/_app/agents/admissions'
     | '/_app/agents/appointment'
     | '/_app/agents/executive'
+    | '/_app/agents/follow-up'
     | '/_app/agents/funding'
+    | '/_app/agents/recruiting'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -390,11 +414,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCarriersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agents/recruiting': {
+      id: '/_app/agents/recruiting'
+      path: '/agents/recruiting'
+      fullPath: '/agents/recruiting'
+      preLoaderRoute: typeof AppAgentsRecruitingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/agents/funding': {
       id: '/_app/agents/funding'
       path: '/agents/funding'
       fullPath: '/agents/funding'
       preLoaderRoute: typeof AppAgentsFundingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/follow-up': {
+      id: '/_app/agents/follow-up'
+      path: '/agents/follow-up'
+      fullPath: '/agents/follow-up'
+      preLoaderRoute: typeof AppAgentsFollowUpRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/agents/executive': {
@@ -430,7 +468,9 @@ interface AppRouteChildren {
   AppAgentsAdmissionsRoute: typeof AppAgentsAdmissionsRoute
   AppAgentsAppointmentRoute: typeof AppAgentsAppointmentRoute
   AppAgentsExecutiveRoute: typeof AppAgentsExecutiveRoute
+  AppAgentsFollowUpRoute: typeof AppAgentsFollowUpRoute
   AppAgentsFundingRoute: typeof AppAgentsFundingRoute
+  AppAgentsRecruitingRoute: typeof AppAgentsRecruitingRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -442,7 +482,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppAgentsAdmissionsRoute: AppAgentsAdmissionsRoute,
   AppAgentsAppointmentRoute: AppAgentsAppointmentRoute,
   AppAgentsExecutiveRoute: AppAgentsExecutiveRoute,
+  AppAgentsFollowUpRoute: AppAgentsFollowUpRoute,
   AppAgentsFundingRoute: AppAgentsFundingRoute,
+  AppAgentsRecruitingRoute: AppAgentsRecruitingRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
