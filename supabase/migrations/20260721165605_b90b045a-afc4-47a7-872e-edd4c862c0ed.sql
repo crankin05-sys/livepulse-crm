@@ -1,0 +1,1 @@
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS funding_path text; ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS funding_notes text;
