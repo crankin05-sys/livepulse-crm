@@ -392,11 +392,12 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
     },
     {
       name: "Appointment AI",
-      role: "Schedules consultations & sends reminders",
+      role: "Books real calls & campus tours on the calendar",
       icon: CalendarClock,
       count: hotWarm,
       unit: "prospects to book",
       live: hotWarm > 0,
+      href: "/agents/appointment" as const,
     },
     {
       name: "Follow-Up AI",

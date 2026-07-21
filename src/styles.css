@@ -269,6 +269,22 @@
     0 18px 40px oklch(0.1 0.02 262 / 0.55);
 }
 
+@utility cc-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid oklch(1 0 0 / 0.1);
+  background: oklch(0.18 0.03 262 / 0.6);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  color: inherit;
+  outline: none;
+  transition: border-color 120ms, box-shadow 120ms;
+  &:focus {
+    border-color: oklch(0.79 0.16 66 / 0.6);
+    box-shadow: 0 0 0 3px oklch(0.79 0.16 66 / 0.15);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-ken-burns, .animate-truck-drive, .animate-road, .animate-marquee, .animate-live-ping {
     animation: none !important;

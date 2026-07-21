@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appt_type: string
+          completed_at: string | null
+          confirmed_at: string | null
+          created_at: string
+          duration_minutes: number
+          email: string | null
+          full_name: string
+          id: string
+          lead_id: string | null
+          notes: string | null
+          phone: string
+          program: string | null
+          scheduled_at: string
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appt_type?: string
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          duration_minutes?: number
+          email?: string | null
+          full_name: string
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          phone: string
+          program?: string | null
+          scheduled_at: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appt_type?: string
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          duration_minutes?: number
+          email?: string | null
+          full_name?: string
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          phone?: string
+          program?: string | null
+          scheduled_at?: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           audience_size: number

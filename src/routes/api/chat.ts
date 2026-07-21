@@ -117,35 +117,82 @@ export const Route = createFileRoute("/api/chat")({
             }),
             book_appointment: tool({
               description:
-                "Book a callback or campus tour with an advisor once the user gives a name, phone, and a preferred time.",
+                "Book a real appointment (phone call or campus tour) on the school's calendar. Requires name, phone, and a scheduled_at ISO timestamp. Convert the user's stated preferred time (e.g. 'tomorrow 3pm', 'Friday at 10') into an ISO timestamp in America/Detroit before calling. Business hours: Mon–Fri 8am–6pm, Sat by appointment.",
               inputSchema: z.object({
                 full_name: z.string().min(1).max(120),
                 phone: z.string().min(5).max(40),
                 email: z.string().email().max(200).optional(),
-                type: z.enum(["Phone call", "Campus tour"]),
-                preferred_time: z.string().max(200).describe("When they want the call/tour"),
+                appt_type: z.enum(["phone_call", "campus_tour"]).describe("phone_call or campus_tour"),
+                scheduled_at: z
+                  .string()
+                  .describe("ISO 8601 timestamp (America/Detroit), e.g. 2026-07-22T15:00:00-04:00"),
+                duration_minutes: z.number().int().min(15).max(120).default(20),
                 program: z
                   .enum(["Class A CDL", "Class B CDL", "Third-Party Skills Exam", "Undecided"])
                   .optional(),
+                notes: z.string().max(600).optional(),
               }),
-              execute: async ({ full_name, phone, email, type, preferred_time, program }) => {
+              execute: async ({
+                full_name,
+                phone,
+                email,
+                appt_type,
+                scheduled_at,
+                duration_minutes,
+                program,
+                notes,
+              }) => {
                 const supabase = getSupabase();
-                const { error } = await supabase.from("leads").insert({
+                // 1. Create/attach a lead record
+                const leadEmail = email ?? `${phone.replace(/\D/g, "")}@booking.ustdts.edu`;
+                const { data: leadRow } = await supabase
+                  .from("leads")
+                  .insert({
+                    full_name,
+                    email: leadEmail,
+                    phone,
+                    program: program ?? null,
+                    message: notes ?? `${appt_type} booked via Stephanie`,
+                    source: "ai_booking",
+                    status: "new",
+                    score: 85,
+                  })
+                  .select("id")
+                  .single();
+
+                // 2. Create the real appointment
+                const { error: apptErr } = await supabase.from("appointments").insert({
+                  lead_id: leadRow?.id ?? null,
                   full_name,
-                  email: email ?? `${phone.replace(/\D/g, "")}@booking.ustdts.edu`,
                   phone,
+                  email: email ?? null,
                   program: program ?? null,
-                  message: `${type} requested — preferred time: ${preferred_time}`,
-                  source: "ai_booking",
-                  status: "new",
-                  score: 85,
+                  appt_type,
+                  scheduled_at,
+                  duration_minutes: duration_minutes ?? 20,
+                  notes: notes ?? null,
+                  source: "ai_agent",
+                  status: "scheduled",
                 });
-                if (error) {
-                  return { success: false, message: "Could not book that right now." };
+                if (apptErr) {
+                  return {
+                    success: false,
+                    message: `Could not book that slot: ${apptErr.message}`,
+                  };
                 }
+                const when = new Date(scheduled_at).toLocaleString("en-US", {
+                  timeZone: "America/Detroit",
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                });
+                const kind = appt_type === "campus_tour" ? "Campus tour" : "Phone call";
                 return {
                   success: true,
-                  message: `${type} booked for ${full_name} (${preferred_time}). An advisor will confirm shortly.`,
+                  message: `${kind} booked for ${full_name} on ${when} ET. An advisor will confirm shortly at ${phone}.`,
+                  scheduled_at,
                 };
               },
             }),

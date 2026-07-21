@@ -27,6 +27,7 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
 import { Route as AppAgentsFundingRouteImport } from './routes/_app/agents.funding'
 import { Route as AppAgentsExecutiveRouteImport } from './routes/_app/agents.executive'
+import { Route as AppAgentsAppointmentRouteImport } from './routes/_app/agents.appointment'
 import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.admissions'
 
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -118,6 +119,11 @@ const AppAgentsExecutiveRoute = AppAgentsExecutiveRouteImport.update({
   path: '/agents/executive',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgentsAppointmentRoute = AppAgentsAppointmentRouteImport.update({
+  id: '/agents/appointment',
+  path: '/agents/appointment',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAgentsAdmissionsRoute = AppAgentsAdmissionsRouteImport.update({
   id: '/agents/admissions',
   path: '/agents/admissions',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
   '/agents/admissions': typeof AppAgentsAdmissionsRoute
+  '/agents/appointment': typeof AppAgentsAppointmentRoute
   '/agents/executive': typeof AppAgentsExecutiveRoute
   '/agents/funding': typeof AppAgentsFundingRoute
 }
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
   '/agents/admissions': typeof AppAgentsAdmissionsRoute
+  '/agents/appointment': typeof AppAgentsAppointmentRoute
   '/agents/executive': typeof AppAgentsExecutiveRoute
   '/agents/funding': typeof AppAgentsFundingRoute
 }
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
   '/_app/agents/admissions': typeof AppAgentsAdmissionsRoute
+  '/_app/agents/appointment': typeof AppAgentsAppointmentRoute
   '/_app/agents/executive': typeof AppAgentsExecutiveRoute
   '/_app/agents/funding': typeof AppAgentsFundingRoute
 }
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/api/executive-chat'
     | '/api/speech'
     | '/agents/admissions'
+    | '/agents/appointment'
     | '/agents/executive'
     | '/agents/funding'
   fileRoutesByTo: FileRoutesByTo
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/api/executive-chat'
     | '/api/speech'
     | '/agents/admissions'
+    | '/agents/appointment'
     | '/agents/executive'
     | '/agents/funding'
   id:
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/api/executive-chat'
     | '/api/speech'
     | '/_app/agents/admissions'
+    | '/_app/agents/appointment'
     | '/_app/agents/executive'
     | '/_app/agents/funding'
   fileRoutesById: FileRoutesById
@@ -392,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgentsExecutiveRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agents/appointment': {
+      id: '/_app/agents/appointment'
+      path: '/agents/appointment'
+      fullPath: '/agents/appointment'
+      preLoaderRoute: typeof AppAgentsAppointmentRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/agents/admissions': {
       id: '/_app/agents/admissions'
       path: '/agents/admissions'
@@ -409,6 +428,7 @@ interface AppRouteChildren {
   AppLeadsRoute: typeof AppLeadsRoute
   AppStudentsRoute: typeof AppStudentsRoute
   AppAgentsAdmissionsRoute: typeof AppAgentsAdmissionsRoute
+  AppAgentsAppointmentRoute: typeof AppAgentsAppointmentRoute
   AppAgentsExecutiveRoute: typeof AppAgentsExecutiveRoute
   AppAgentsFundingRoute: typeof AppAgentsFundingRoute
 }
@@ -420,6 +440,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLeadsRoute: AppLeadsRoute,
   AppStudentsRoute: AppStudentsRoute,
   AppAgentsAdmissionsRoute: AppAgentsAdmissionsRoute,
+  AppAgentsAppointmentRoute: AppAgentsAppointmentRoute,
   AppAgentsExecutiveRoute: AppAgentsExecutiveRoute,
   AppAgentsFundingRoute: AppAgentsFundingRoute,
 }

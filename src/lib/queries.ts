@@ -9,6 +9,7 @@ export type Carrier = Tables<"carriers">;
 export type Placement = Tables<"placements">;
 export type Payment = Tables<"payments">;
 export type DocumentRow = Tables<"documents">;
+export type Appointment = Tables<"appointments">;
 
 async function must<T>(p: PromiseLike<{ data: T | null; error: { message: string } | null }>): Promise<T> {
   const { data, error } = await p;
@@ -49,4 +50,12 @@ export const paymentsQuery = queryOptions({
 export const documentsQuery = queryOptions({
   queryKey: ["documents"],
   queryFn: () => must<DocumentRow[]>(supabase.from("documents").select("*")),
+});
+
+export const appointmentsQuery = queryOptions({
+  queryKey: ["appointments"],
+  queryFn: () =>
+    must<Appointment[]>(
+      supabase.from("appointments").select("*").order("scheduled_at", { ascending: true }),
+    ),
 });
