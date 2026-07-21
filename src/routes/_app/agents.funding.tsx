@@ -25,7 +25,7 @@ import {
   FUNDING_LABEL,
   type FundingPath,
 } from "../../lib/funding-ai.functions";
-import { relativeTime, formatCurrency } from "../../lib/format";
+import { relativeTime, currency as formatCurrency } from "../../lib/format";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 
