@@ -127,7 +127,12 @@ function AuthLayout() {
           </div>
           {aiAgents.map((agent) => {
             const live = agent.status === "Active";
-            const href = agent.name === "Admissions AI" ? "/agents/admissions" : null;
+            const href =
+              agent.name === "Admissions AI"
+                ? "/agents/admissions"
+                : agent.name === "Funding AI"
+                  ? "/agents/funding"
+                  : null;
             const inner = (
               <>
                 <agent.icon className="h-4.5 w-4.5 shrink-0" />
