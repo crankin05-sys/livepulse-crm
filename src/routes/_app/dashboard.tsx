@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -379,6 +379,7 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
       count: totalLeads,
       unit: "leads handled",
       live: totalLeads > 0,
+      href: "/agents/admissions" as const,
     },
     {
       name: "Funding AI",
@@ -427,8 +428,13 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
       {agents.map((a) => {
         const Icon = a.icon;
         const live = a.live;
-        return (
-          <div key={a.name} className="cc-card flex items-start gap-3 rounded-2xl p-5">
+        const href = "href" in a ? a.href : undefined;
+        const card = (
+          <div
+            className={`cc-card flex items-start gap-3 rounded-2xl p-5 ${
+              href ? "cursor-pointer transition hover:border-accent/50 hover:bg-background/60" : ""
+            }`}
+          >
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Icon className="h-5 w-5" />
             </span>
@@ -447,8 +453,20 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
                 <span className="font-display text-lg font-bold text-foreground tabular-nums">{a.count}</span>
                 <span className="text-[11px] text-muted-foreground">{a.unit}</span>
               </div>
+              {href && (
+                <div className="mt-2 text-[10px] font-bold uppercase text-accent-foreground/80">
+                  Open live view →
+                </div>
+              )}
             </div>
           </div>
+        );
+        return href ? (
+          <Link key={a.name} to={href}>
+            {card}
+          </Link>
+        ) : (
+          <div key={a.name}>{card}</div>
         );
       })}
     </div>

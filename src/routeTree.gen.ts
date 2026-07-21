@@ -25,6 +25,7 @@ import { Route as AppLeadsRouteImport } from './routes/_app/leads'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
+import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.admissions'
 
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
@@ -105,6 +106,11 @@ const AppCarriersRoute = AppCarriersRouteImport.update({
   path: '/carriers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgentsAdmissionsRoute = AppAgentsAdmissionsRouteImport.update({
+  id: '/agents/admissions',
+  path: '/agents/admissions',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
+  '/agents/admissions': typeof AppAgentsAdmissionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
+  '/agents/admissions': typeof AppAgentsAdmissionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/executive-chat': typeof ApiExecutiveChatRoute
   '/api/speech': typeof ApiSpeechRoute
+  '/_app/agents/admissions': typeof AppAgentsAdmissionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/executive-chat'
     | '/api/speech'
+    | '/agents/admissions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/executive-chat'
     | '/api/speech'
+    | '/agents/admissions'
   id:
     | '__root__'
     | '/'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/executive-chat'
     | '/api/speech'
+    | '/_app/agents/admissions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -342,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCarriersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agents/admissions': {
+      id: '/_app/agents/admissions'
+      path: '/agents/admissions'
+      fullPath: '/agents/admissions'
+      preLoaderRoute: typeof AppAgentsAdmissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -351,6 +370,7 @@ interface AppRouteChildren {
   AppFleetRoute: typeof AppFleetRoute
   AppLeadsRoute: typeof AppLeadsRoute
   AppStudentsRoute: typeof AppStudentsRoute
+  AppAgentsAdmissionsRoute: typeof AppAgentsAdmissionsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -359,6 +379,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFleetRoute: AppFleetRoute,
   AppLeadsRoute: AppLeadsRoute,
   AppStudentsRoute: AppStudentsRoute,
+  AppAgentsAdmissionsRoute: AppAgentsAdmissionsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
