@@ -416,11 +416,12 @@ function AgentsGrid({ metrics }: { metrics: DashboardMetrics }) {
     },
     {
       name: "Executive AI",
-      role: "Summarizes KPIs, bottlenecks & weekly performance",
+      role: "Predictive brief, paperwork triage, campaign ops — voice enabled",
       icon: TrendingUp,
       count: revenue.pctToGoal,
       unit: "% to weekly goal",
       live: true,
+      href: "/agents/executive" as const,
     },
   ];
 

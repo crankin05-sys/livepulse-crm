@@ -132,7 +132,9 @@ function AuthLayout() {
                 ? "/agents/admissions"
                 : agent.name === "Funding AI"
                   ? "/agents/funding"
-                  : null;
+                  : agent.name === "Executive AI"
+                    ? "/agents/executive"
+                    : null;
             const inner = (
               <>
                 <agent.icon className="h-4.5 w-4.5 shrink-0" />
