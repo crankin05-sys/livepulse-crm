@@ -16,6 +16,7 @@ import {
   Bell,
   Megaphone,
   TrendingUp,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../lib/useAuth";
 import { supabase } from "../integrations/supabase/client";
@@ -47,6 +48,7 @@ const navGroups = [
 ] as const;
 
 const aiAgents = [
+  { name: "Qualifying AI", icon: ShieldCheck, status: "Active" },
   { name: "Admissions AI", icon: UserCheck, status: "Active" },
   { name: "Funding AI", icon: Wallet, status: "Active" },
   { name: "Appointment AI", icon: CalendarClock, status: "Active" },
@@ -128,7 +130,9 @@ function AuthLayout() {
           {aiAgents.map((agent) => {
             const live = agent.status === "Active";
             const href =
-              agent.name === "Admissions AI"
+              agent.name === "Qualifying AI"
+                ? "/agents/qualifying"
+                : agent.name === "Admissions AI"
                 ? "/agents/admissions"
                 : agent.name === "Funding AI"
                   ? "/agents/funding"
