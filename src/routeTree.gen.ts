@@ -26,6 +26,7 @@ import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
 import { Route as AppAgentsRecruitingRouteImport } from './routes/_app/agents.recruiting'
+import { Route as AppAgentsQualifyingRouteImport } from './routes/_app/agents.qualifying'
 import { Route as AppAgentsFundingRouteImport } from './routes/_app/agents.funding'
 import { Route as AppAgentsFollowUpRouteImport } from './routes/_app/agents.follow-up'
 import { Route as AppAgentsExecutiveRouteImport } from './routes/_app/agents.executive'
@@ -116,6 +117,11 @@ const AppAgentsRecruitingRoute = AppAgentsRecruitingRouteImport.update({
   path: '/agents/recruiting',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgentsQualifyingRoute = AppAgentsQualifyingRouteImport.update({
+  id: '/agents/qualifying',
+  path: '/agents/qualifying',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAgentsFundingRoute = AppAgentsFundingRouteImport.update({
   id: '/agents/funding',
   path: '/agents/funding',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/agents/executive': typeof AppAgentsExecutiveRoute
   '/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/agents/funding': typeof AppAgentsFundingRoute
+  '/agents/qualifying': typeof AppAgentsQualifyingRoute
   '/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRoutesByTo {
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/agents/executive': typeof AppAgentsExecutiveRoute
   '/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/agents/funding': typeof AppAgentsFundingRoute
+  '/agents/qualifying': typeof AppAgentsQualifyingRoute
   '/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRoutesById {
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/_app/agents/executive': typeof AppAgentsExecutiveRoute
   '/_app/agents/follow-up': typeof AppAgentsFollowUpRoute
   '/_app/agents/funding': typeof AppAgentsFundingRoute
+  '/_app/agents/qualifying': typeof AppAgentsQualifyingRoute
   '/_app/agents/recruiting': typeof AppAgentsRecruitingRoute
 }
 export interface FileRouteTypes {
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/agents/executive'
     | '/agents/follow-up'
     | '/agents/funding'
+    | '/agents/qualifying'
     | '/agents/recruiting'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/agents/executive'
     | '/agents/follow-up'
     | '/agents/funding'
+    | '/agents/qualifying'
     | '/agents/recruiting'
   id:
     | '__root__'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/_app/agents/executive'
     | '/_app/agents/follow-up'
     | '/_app/agents/funding'
+    | '/_app/agents/qualifying'
     | '/_app/agents/recruiting'
   fileRoutesById: FileRoutesById
 }
@@ -421,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgentsRecruitingRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agents/qualifying': {
+      id: '/_app/agents/qualifying'
+      path: '/agents/qualifying'
+      fullPath: '/agents/qualifying'
+      preLoaderRoute: typeof AppAgentsQualifyingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/agents/funding': {
       id: '/_app/agents/funding'
       path: '/agents/funding'
@@ -470,6 +489,7 @@ interface AppRouteChildren {
   AppAgentsExecutiveRoute: typeof AppAgentsExecutiveRoute
   AppAgentsFollowUpRoute: typeof AppAgentsFollowUpRoute
   AppAgentsFundingRoute: typeof AppAgentsFundingRoute
+  AppAgentsQualifyingRoute: typeof AppAgentsQualifyingRoute
   AppAgentsRecruitingRoute: typeof AppAgentsRecruitingRoute
 }
 
@@ -484,6 +504,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAgentsExecutiveRoute: AppAgentsExecutiveRoute,
   AppAgentsFollowUpRoute: AppAgentsFollowUpRoute,
   AppAgentsFundingRoute: AppAgentsFundingRoute,
+  AppAgentsQualifyingRoute: AppAgentsQualifyingRoute,
   AppAgentsRecruitingRoute: AppAgentsRecruitingRoute,
 }
 
