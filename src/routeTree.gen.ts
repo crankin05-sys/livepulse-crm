@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as LandingRouteImport } from './routes/landing'
 import { Route as FunnelRouteImport } from './routes/funnel'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CareersRouteImport } from './routes/careers'
@@ -36,6 +37,11 @@ import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.ad
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingRoute = LandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FunnelRoute = FunnelRouteImport.update({
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/funnel': typeof FunnelRoute
+  '/landing': typeof LandingRoute
   '/programs': typeof ProgramsRoute
   '/carriers': typeof AppCarriersRoute
   '/dashboard': typeof AppDashboardRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/funnel': typeof FunnelRoute
+  '/landing': typeof LandingRoute
   '/programs': typeof ProgramsRoute
   '/carriers': typeof AppCarriersRoute
   '/dashboard': typeof AppDashboardRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
   '/funnel': typeof FunnelRoute
+  '/landing': typeof LandingRoute
   '/programs': typeof ProgramsRoute
   '/_app/carriers': typeof AppCarriersRoute
   '/_app/dashboard': typeof AppDashboardRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/funnel'
+    | '/landing'
     | '/programs'
     | '/carriers'
     | '/dashboard'
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/funnel'
+    | '/landing'
     | '/programs'
     | '/carriers'
     | '/dashboard'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/contact'
     | '/funnel'
+    | '/landing'
     | '/programs'
     | '/_app/carriers'
     | '/_app/dashboard'
@@ -306,6 +318,7 @@ export interface RootRouteChildren {
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
   FunnelRoute: typeof FunnelRoute
+  LandingRoute: typeof LandingRoute
   ProgramsRoute: typeof ProgramsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExecutiveChatRoute: typeof ApiExecutiveChatRoute
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/programs'
       fullPath: '/programs'
       preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/funnel': {
@@ -518,6 +538,7 @@ const rootRouteChildren: RootRouteChildren = {
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,
   FunnelRoute: FunnelRoute,
+  LandingRoute: LandingRoute,
   ProgramsRoute: ProgramsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExecutiveChatRoute: ApiExecutiveChatRoute,

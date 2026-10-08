@@ -7,6 +7,7 @@ const navItems = [
   { to: "/", label: "Home" },
   { to: "/programs", label: "Programs" },
   { to: "/funnel", label: "Enroll" },
+  { to: "/landing", label: "Landing Page" },
   { to: "/careers", label: "Career Services" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
