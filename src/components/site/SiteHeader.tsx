@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Truck, Phone } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
+import logoAsset from "@/assets/ustdts-logo.png.asset.json";
 import { Button } from "../ui/button";
 
 const navItems = [
@@ -20,9 +21,11 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Truck className="h-5 w-5" />
-          </span>
+          <img
+            src={logoAsset.url}
+            alt="U.S. Truck Driver Training School logo"
+            className="h-11 w-11"
+          />
           <span className="flex flex-col leading-none">
             <span className="font-display text-sm font-bold tracking-tight text-foreground">U.S. Truck Driver</span>
             <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">Training School</span>

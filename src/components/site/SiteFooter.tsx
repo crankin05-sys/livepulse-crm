@@ -1,16 +1,19 @@
 import { Link } from "@tanstack/react-router";
-import { Truck, Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
+import logoAsset from "@/assets/ustdts-logo.png.asset.json";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4 lg:px-8">
         <div className="md:col-span-1">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-              <Truck className="h-5 w-5" />
-            </span>
-            <span className="font-display text-base font-bold">U.S. Truck Driver Training School</span>
+          <div className="flex items-center gap-3">
+            <img
+              src={logoAsset.url}
+              alt="U.S. Truck Driver Training School logo"
+              className="h-14 w-14"
+            />
+            <span className="font-display text-base font-bold leading-tight">U.S. Truck Driver Training School</span>
           </div>
           <p className="mt-4 text-sm text-primary-foreground/70">
             Training the next generation of professional drivers with hands-on instruction, financing options, and real job placement.
