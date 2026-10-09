@@ -9,63 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppRouteImport } from './routes/_app'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as CareersRouteImport } from './routes/careers'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as FunnelRouteImport } from './routes/funnel'
-import { Route as LandingRouteImport } from './routes/landing'
 import { Route as ProgramsRouteImport } from './routes/programs'
-import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
-import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
-import { Route as AppFleetRouteImport } from './routes/_app/fleet'
-import { Route as AppLeadsRouteImport } from './routes/_app/leads'
-import { Route as AppStudentsRouteImport } from './routes/_app/students'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as ApiExecutiveChatRouteImport } from './routes/api/executive-chat'
+import { Route as LandingRouteImport } from './routes/landing'
+import { Route as FunnelRouteImport } from './routes/funnel'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSpeechRouteImport } from './routes/api/speech'
-import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.admissions'
-import { Route as AppAgentsAppointmentRouteImport } from './routes/_app/agents.appointment'
-import { Route as AppAgentsExecutiveRouteImport } from './routes/_app/agents.executive'
-import { Route as AppAgentsFollowUpRouteImport } from './routes/_app/agents.follow-up'
-import { Route as AppAgentsFundingRouteImport } from './routes/_app/agents.funding'
-import { Route as AppAgentsQualifyingRouteImport } from './routes/_app/agents.qualifying'
+import { Route as ApiExecutiveChatRouteImport } from './routes/api/executive-chat'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AppStudentsRouteImport } from './routes/_app/students'
+import { Route as AppLeadsRouteImport } from './routes/_app/leads'
+import { Route as AppFleetRouteImport } from './routes/_app/fleet'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppCarriersRouteImport } from './routes/_app/carriers'
 import { Route as AppAgentsRecruitingRouteImport } from './routes/_app/agents.recruiting'
+import { Route as AppAgentsQualifyingRouteImport } from './routes/_app/agents.qualifying'
+import { Route as AppAgentsFundingRouteImport } from './routes/_app/agents.funding'
+import { Route as AppAgentsFollowUpRouteImport } from './routes/_app/agents.follow-up'
+import { Route as AppAgentsExecutiveRouteImport } from './routes/_app/agents.executive'
+import { Route as AppAgentsAppointmentRouteImport } from './routes/_app/agents.appointment'
+import { Route as AppAgentsAdmissionsRouteImport } from './routes/_app/agents.admissions'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CareersRoute = CareersRouteImport.update({
-  id: '/careers',
-  path: '/careers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FunnelRoute = FunnelRouteImport.update({
-  id: '/funnel',
-  path: '/funnel',
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingRoute = LandingRouteImport.update({
@@ -73,44 +44,38 @@ const LandingRoute = LandingRouteImport.update({
   path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProgramsRoute = ProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
+const FunnelRoute = FunnelRouteImport.update({
+  id: '/funnel',
+  path: '/funnel',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppCarriersRoute = AppCarriersRouteImport.update({
-  id: '/carriers',
-  path: '/carriers',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFleetRoute = AppFleetRouteImport.update({
-  id: '/fleet',
-  path: '/fleet',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLeadsRoute = AppLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppStudentsRoute = AppStudentsRouteImport.update({
-  id: '/students',
-  path: '/students',
-  getParentRoute: () => AppRoute,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiExecutiveChatRoute = ApiExecutiveChatRouteImport.update({
-  id: '/api/executive-chat',
-  path: '/api/executive-chat',
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSpeechRoute = ApiSpeechRouteImport.update({
@@ -118,29 +83,44 @@ const ApiSpeechRoute = ApiSpeechRouteImport.update({
   path: '/api/speech',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAgentsAdmissionsRoute = AppAgentsAdmissionsRouteImport.update({
-  id: '/agents/admissions',
-  path: '/agents/admissions',
+const ApiExecutiveChatRoute = ApiExecutiveChatRouteImport.update({
+  id: '/api/executive-chat',
+  path: '/api/executive-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppStudentsRoute = AppStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsAppointmentRoute = AppAgentsAppointmentRouteImport.update({
-  id: '/agents/appointment',
-  path: '/agents/appointment',
+const AppLeadsRoute = AppLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsExecutiveRoute = AppAgentsExecutiveRouteImport.update({
-  id: '/agents/executive',
-  path: '/agents/executive',
+const AppFleetRoute = AppFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsFollowUpRoute = AppAgentsFollowUpRouteImport.update({
-  id: '/agents/follow-up',
-  path: '/agents/follow-up',
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsFundingRoute = AppAgentsFundingRouteImport.update({
-  id: '/agents/funding',
-  path: '/agents/funding',
+const AppCarriersRoute = AppCarriersRouteImport.update({
+  id: '/carriers',
+  path: '/carriers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsRecruitingRoute = AppAgentsRecruitingRouteImport.update({
+  id: '/agents/recruiting',
+  path: '/agents/recruiting',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAgentsQualifyingRoute = AppAgentsQualifyingRouteImport.update({
@@ -148,9 +128,29 @@ const AppAgentsQualifyingRoute = AppAgentsQualifyingRouteImport.update({
   path: '/agents/qualifying',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsRecruitingRoute = AppAgentsRecruitingRouteImport.update({
-  id: '/agents/recruiting',
-  path: '/agents/recruiting',
+const AppAgentsFundingRoute = AppAgentsFundingRouteImport.update({
+  id: '/agents/funding',
+  path: '/agents/funding',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsFollowUpRoute = AppAgentsFollowUpRouteImport.update({
+  id: '/agents/follow-up',
+  path: '/agents/follow-up',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsExecutiveRoute = AppAgentsExecutiveRouteImport.update({
+  id: '/agents/executive',
+  path: '/agents/executive',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsAppointmentRoute = AppAgentsAppointmentRouteImport.update({
+  id: '/agents/appointment',
+  path: '/agents/appointment',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgentsAdmissionsRoute = AppAgentsAdmissionsRouteImport.update({
+  id: '/agents/admissions',
+  path: '/agents/admissions',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -327,53 +327,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/careers': {
-      id: '/careers'
-      path: '/careers'
-      fullPath: '/careers'
-      preLoaderRoute: typeof CareersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/funnel': {
-      id: '/funnel'
-      path: '/funnel'
-      fullPath: '/funnel'
-      preLoaderRoute: typeof FunnelRouteImport
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing': {
@@ -383,60 +341,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/programs': {
-      id: '/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof ProgramsRouteImport
+    '/funnel': {
+      id: '/funnel'
+      path: '/funnel'
+      fullPath: '/funnel'
+      preLoaderRoute: typeof FunnelRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/carriers': {
-      id: '/_app/carriers'
-      path: '/carriers'
-      fullPath: '/carriers'
-      preLoaderRoute: typeof AppCarriersRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/fleet': {
-      id: '/_app/fleet'
-      path: '/fleet'
-      fullPath: '/fleet'
-      preLoaderRoute: typeof AppFleetRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/leads': {
-      id: '/_app/leads'
-      path: '/leads'
-      fullPath: '/leads'
-      preLoaderRoute: typeof AppLeadsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/students': {
-      id: '/_app/students'
-      path: '/students'
-      fullPath: '/students'
-      preLoaderRoute: typeof AppStudentsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/executive-chat': {
-      id: '/api/executive-chat'
-      path: '/api/executive-chat'
-      fullPath: '/api/executive-chat'
-      preLoaderRoute: typeof ApiExecutiveChatRouteImport
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/speech': {
@@ -446,39 +397,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSpeechRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/agents/admissions': {
-      id: '/_app/agents/admissions'
-      path: '/agents/admissions'
-      fullPath: '/agents/admissions'
-      preLoaderRoute: typeof AppAgentsAdmissionsRouteImport
+    '/api/executive-chat': {
+      id: '/api/executive-chat'
+      path: '/api/executive-chat'
+      fullPath: '/api/executive-chat'
+      preLoaderRoute: typeof ApiExecutiveChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/students': {
+      id: '/_app/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AppStudentsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/agents/appointment': {
-      id: '/_app/agents/appointment'
-      path: '/agents/appointment'
-      fullPath: '/agents/appointment'
-      preLoaderRoute: typeof AppAgentsAppointmentRouteImport
+    '/_app/leads': {
+      id: '/_app/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof AppLeadsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/agents/executive': {
-      id: '/_app/agents/executive'
-      path: '/agents/executive'
-      fullPath: '/agents/executive'
-      preLoaderRoute: typeof AppAgentsExecutiveRouteImport
+    '/_app/fleet': {
+      id: '/_app/fleet'
+      path: '/fleet'
+      fullPath: '/fleet'
+      preLoaderRoute: typeof AppFleetRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/agents/follow-up': {
-      id: '/_app/agents/follow-up'
-      path: '/agents/follow-up'
-      fullPath: '/agents/follow-up'
-      preLoaderRoute: typeof AppAgentsFollowUpRouteImport
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/agents/funding': {
-      id: '/_app/agents/funding'
-      path: '/agents/funding'
-      fullPath: '/agents/funding'
-      preLoaderRoute: typeof AppAgentsFundingRouteImport
+    '/_app/carriers': {
+      id: '/_app/carriers'
+      path: '/carriers'
+      fullPath: '/carriers'
+      preLoaderRoute: typeof AppCarriersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/recruiting': {
+      id: '/_app/agents/recruiting'
+      path: '/agents/recruiting'
+      fullPath: '/agents/recruiting'
+      preLoaderRoute: typeof AppAgentsRecruitingRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/agents/qualifying': {
@@ -488,11 +460,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgentsQualifyingRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/agents/recruiting': {
-      id: '/_app/agents/recruiting'
-      path: '/agents/recruiting'
-      fullPath: '/agents/recruiting'
-      preLoaderRoute: typeof AppAgentsRecruitingRouteImport
+    '/_app/agents/funding': {
+      id: '/_app/agents/funding'
+      path: '/agents/funding'
+      fullPath: '/agents/funding'
+      preLoaderRoute: typeof AppAgentsFundingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/follow-up': {
+      id: '/_app/agents/follow-up'
+      path: '/agents/follow-up'
+      fullPath: '/agents/follow-up'
+      preLoaderRoute: typeof AppAgentsFollowUpRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/executive': {
+      id: '/_app/agents/executive'
+      path: '/agents/executive'
+      fullPath: '/agents/executive'
+      preLoaderRoute: typeof AppAgentsExecutiveRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/appointment': {
+      id: '/_app/agents/appointment'
+      path: '/agents/appointment'
+      fullPath: '/agents/appointment'
+      preLoaderRoute: typeof AppAgentsAppointmentRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/agents/admissions': {
+      id: '/_app/agents/admissions'
+      path: '/agents/admissions'
+      fullPath: '/agents/admissions'
+      preLoaderRoute: typeof AppAgentsAdmissionsRouteImport
       parentRoute: typeof AppRoute
     }
   }

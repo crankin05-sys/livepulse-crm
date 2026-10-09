@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import adVideo from "@/assets/videos/ustdts-ad.mp4.asset.json";
+import logoAsset from "@/assets/ustdts-logo.png.asset.json";
 
 export const Route = createFileRoute("/landing")({
   head: () => ({
@@ -27,9 +28,16 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       <section className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="mb-6 text-center text-3xl font-bold tracking-tight">
-          Watch: Your CDL Career Starts Here
-        </h1>
+        <div className="mb-6 flex flex-col items-center text-center">
+          <img
+            src={logoAsset.url}
+            alt="U.S. Truck Driver Training School logo"
+            className="h-24 w-24 drop-shadow-lg"
+          />
+          <h1 className="mt-4 text-3xl font-bold tracking-tight">
+            Watch: Your CDL Career Starts Here
+          </h1>
+        </div>
         <video
           src={adVideo.url}
           controls
